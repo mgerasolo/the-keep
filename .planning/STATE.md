@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 
 Phase: 1 of 5 (Foundation Shell)
 Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-18 -- Roadmap created
+Status: Context captured, ready to plan
+Last activity: 2026-03-18 -- Phase 1 context captured
 
 Progress: [..........] 0%
 
