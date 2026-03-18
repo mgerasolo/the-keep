@@ -1,7 +1,8 @@
 ---
 phase: 1
 slug: foundation-shell
-status: draft
+status: approved
+reviewed_at: 2026-03-18
 shadcn_initialized: false
 preset: pending-scaffolding
 created: 2026-03-18
