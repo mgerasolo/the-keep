@@ -1,8 +1,46 @@
-
-# Playwright
+# === Dependencies ===
 node_modules/
+.pnpm-store/
+
+# === Build outputs ===
+dist/
+build/
+.next/
+out/
+
+# === Environment & Secrets ===
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# === IDE ===
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# === Playwright ===
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === NFS Mounts (symlink targets - do not commit contents) ===
+# The symlinks themselves ARE committed (they define project structure)
+# But never commit anything from the mount targets directly
+/mnt/
+
+# === Local development ===
+.turbo/
+.cache/
+coverage/
+*.local
