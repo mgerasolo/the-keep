@@ -11,6 +11,9 @@ Requirements for initial release, organized by version milestone.
 
 Minimum viable product: basic navigation, search, and AI agent query access.
 
+- [ ] **VIEW-01**: File viewer displays markdown with line numbers
+- [ ] **VIEW-02**: File viewer has syntax highlighting for code blocks
+- [ ] **VIEW-03**: File viewer highlights frontmatter/YAML distinctly
 - [ ] **SHELL-01**: User can see all markdown files in a tree view sidebar
 - [ ] **SHELL-02**: User can expand/collapse folders in the tree view
 - [ ] **SHELL-03**: User can open files in tabs
@@ -43,6 +46,7 @@ Full editing experience with authentication.
 - [ ] **EDIT-05**: Editor saves as clean markdown (lossless roundtrip)
 - [ ] **EDIT-06**: Editor shows dirty indicator when unsaved
 - [ ] **EDIT-07**: User can save with Cmd+S
+- [ ] **EDIT-08**: Files are auto-formatted with Prettier on save
 - [ ] **AUTH-01**: User must authenticate via Authentik SSO
 - [ ] **AUTH-02**: Unauthenticated users cannot access the app
 - [ ] **AUTH-03**: API requests require bearer token authentication
@@ -133,21 +137,60 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHELL-01 to SHELL-09 | Phase 1 | Pending |
-| SEARCH-01 to SEARCH-03 | Phase 1 | Pending |
-| API-01 to API-03 | Phase 1 | Pending |
-| KEEPER-01 to KEEPER-05 | Phase 2 | Pending |
-| EDIT-01 to EDIT-07 | Phase 2 | Pending |
-| AUTH-01 to AUTH-03 | Phase 3 | Pending |
-| UI-01 to UI-06 | Phase 3 | Pending |
-| INBOX-01 to INBOX-06 | Phase 4 | Pending |
-| WORKFLOW-01 to WORKFLOW-02 | Phase 4 | Pending |
+| VIEW-01 | Phase 1: Foundation Shell | Pending |
+| VIEW-02 | Phase 1: Foundation Shell | Pending |
+| VIEW-03 | Phase 1: Foundation Shell | Pending |
+| SHELL-01 | Phase 1: Foundation Shell | Pending |
+| SHELL-02 | Phase 1: Foundation Shell | Pending |
+| SHELL-03 | Phase 1: Foundation Shell | Pending |
+| SHELL-04 | Phase 1: Foundation Shell | Pending |
+| SHELL-05 | Phase 1: Foundation Shell | Pending |
+| SHELL-06 | Phase 1: Foundation Shell | Pending |
+| SHELL-07 | Phase 1: Foundation Shell | Pending |
+| SHELL-08 | Phase 1: Foundation Shell | Pending |
+| SHELL-09 | Phase 1: Foundation Shell | Pending |
+| SEARCH-01 | Phase 1: Foundation Shell | Pending |
+| SEARCH-02 | Phase 1: Foundation Shell | Pending |
+| SEARCH-03 | Phase 1: Foundation Shell | Pending |
+| API-01 | Phase 2: Keeper + Query API | Pending |
+| API-02 | Phase 2: Keeper + Query API | Pending |
+| API-03 | Phase 2: Keeper + Query API | Pending |
+| KEEPER-01 | Phase 2: Keeper + Query API | Pending |
+| KEEPER-02 | Phase 2: Keeper + Query API | Pending |
+| KEEPER-03 | Phase 2: Keeper + Query API | Pending |
+| KEEPER-04 | Phase 2: Keeper + Query API | Pending |
+| KEEPER-05 | Phase 2: Keeper + Query API | Pending |
+| EDIT-01 | Phase 3: Rich Editor | Pending |
+| EDIT-02 | Phase 3: Rich Editor | Pending |
+| EDIT-03 | Phase 3: Rich Editor | Pending |
+| EDIT-04 | Phase 3: Rich Editor | Pending |
+| EDIT-05 | Phase 3: Rich Editor | Pending |
+| EDIT-06 | Phase 3: Rich Editor | Pending |
+| EDIT-07 | Phase 3: Rich Editor | Pending |
+| EDIT-08 | Phase 3: Rich Editor | Pending |
+| AUTH-01 | Phase 4: Auth + UI Polish | Pending |
+| AUTH-02 | Phase 4: Auth + UI Polish | Pending |
+| AUTH-03 | Phase 4: Auth + UI Polish | Pending |
+| UI-01 | Phase 4: Auth + UI Polish | Pending |
+| UI-02 | Phase 4: Auth + UI Polish | Pending |
+| UI-03 | Phase 4: Auth + UI Polish | Pending |
+| UI-04 | Phase 4: Auth + UI Polish | Pending |
+| UI-05 | Phase 4: Auth + UI Polish | Pending |
+| UI-06 | Phase 4: Auth + UI Polish | Pending |
+| INBOX-01 | Phase 5: Inbox + Workflows | Pending |
+| INBOX-02 | Phase 5: Inbox + Workflows | Pending |
+| INBOX-03 | Phase 5: Inbox + Workflows | Pending |
+| INBOX-04 | Phase 5: Inbox + Workflows | Pending |
+| INBOX-05 | Phase 5: Inbox + Workflows | Pending |
+| INBOX-06 | Phase 5: Inbox + Workflows | Pending |
+| WORKFLOW-01 | Phase 5: Inbox + Workflows | Pending |
+| WORKFLOW-02 | Phase 5: Inbox + Workflows | Pending |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 42
-- Unmapped: 0 ✓
+- v1 requirements: 48 total
+- Mapped to phases: 48
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 after roadmap creation*
