@@ -1,0 +1,135 @@
+# Deployment Compliance Rules
+# Augie validates infrastructure deployments
+
+ruleset:
+  id: deployments
+  name: Deployment Compliance
+  description: Ensures deployments update all required registries
+  version: "1.0.0"
+  scope: infrastructure-deployments
+
+rules:
+  # Registry Updates
+  - id: DP-001
+    name: DEPLOYMENTS.md Updated
+    description: New deployments must be added to DEPLOYMENTS.md
+    severity: CRITICAL
+    check: |
+      After deploying a new service or stack:
+      - DEPLOYMENTS.md must contain an entry for the service
+      - Entry must include: Stack Name, Host, Port, URLs
+    remediation: "Add entry to ~/Infrastructure/DEPLOYMENTS.md with stack details"
+
+  - id: DP-002
+    name: Grist Deployments Table Updated
+    description: New deployments must be recorded in Grist
+    severity: WARNING
+    check: |
+      Grist Deployments table must have record for:
+      - App ID (reference to Apps table)
+      - Host ID (reference to Hosts table)
+      - Port, InternalURL, ExternalURL
+      - Status = "active"
+    remediation: "Add record to Grist Deployments table via API"
+
+  - id: DP-003
+    name: Hosts_ChangeLog Entry
+    description: Deployment must be logged to change history
+    severity: WARNING
+    check: |
+      Grist Hosts_ChangeLog table must have entry with:
+      - Host, Change description, Category = "deployment"
+      - Timestamp, ConversationID, Rollback
+    remediation: "Log deployment to Hosts_ChangeLog via Grist API"
+
+  - id: DP-004
+    name: Dashboard Registration
+    description: User-facing services should be on NLF Dashboard
+    severity: INFO
+    check: |
+      If service has external URL (user-facing):
+      - Check /mnt/foundry_infrastructure/apps/nlf/nlf-dashboard/js/config.js
+      - Entry should exist in appropriate selfHosted section
+    remediation: "Add entry to NLF Dashboard config.js"
+
+  # DNS/Routing
+  - id: DP-010
+    name: DNS Record Exists
+    description: External URLs must have DNS records
+    severity: CRITICAL
+    check: |
+      If service has external URL:
+      - AdGuard must have rewrite record pointing to Traefik (10.0.0.27)
+    remediation: "Add DNS rewrite via AdGuard MCP or API"
+
+  - id: DP-011
+    name: Traefik Route Configured
+    description: External URLs must have Traefik routing
+    severity: CRITICAL
+    check: |
+      If service has external URL:
+      - Traefik config file must have router + service entry
+      - File: /opt/traefik/config/{host}.yml on Helicarrier
+    remediation: "Add router and service entries to Traefik config on Helicarrier"
+
+  # Documentation
+  - id: DP-020
+    name: Service Documentation
+    description: New services should have overview documentation
+    severity: INFO
+    check: |
+      Service doc should exist at:
+      - /mnt/foundry_devlab/services/{service}.md
+      - OR /mnt/foundry_infrastructure/deployments/{service}/overview.md
+    remediation: "Create service documentation file with endpoints, credentials location, purpose"
+
+  # Container Health
+  - id: DP-030
+    name: Container Running
+    description: Deployed container must be healthy
+    severity: CRITICAL
+    check: |
+      After deployment:
+      - Container status should be "running" not "exited" or "restarting"
+      - docker ps should show container
+    remediation: "Check container logs, fix startup issues"
+
+  - id: DP-031
+    name: Port Accessible
+    description: Service port must be reachable
+    severity: CRITICAL
+    check: |
+      curl or nc to service port should succeed:
+      - curl -s http://{host}:{port}/ returns non-error
+    remediation: "Check container port mapping, firewall rules, service health"
+
+audit_output:
+  format: |
+    ## 🛡️ Deployment Audit: {service_name} on {host}
+
+    **Ruleset:** deployments v1.0.0
+    **Verdict:** {verdict}
+
+    ### Registry Updates
+    | Check | Status | Notes |
+    |-------|--------|-------|
+    | DEPLOYMENTS.md (DP-001) | {status} | {notes} |
+    | Grist Deployments (DP-002) | {status} | {notes} |
+    | Hosts_ChangeLog (DP-003) | {status} | {notes} |
+    | Dashboard (DP-004) | {status} | {notes} |
+
+    ### DNS/Routing
+    | Check | Status | Notes |
+    |-------|--------|-------|
+    | DNS Record (DP-010) | {status} | {notes} |
+    | Traefik Route (DP-011) | {status} | {notes} |
+
+    ### Health
+    | Check | Status | Notes |
+    |-------|--------|-------|
+    | Container Running (DP-030) | {status} | {notes} |
+    | Port Accessible (DP-031) | {status} | {notes} |
+
+    **Summary:** {critical} CRITICAL, {warning} WARNING, {info} INFO
+
+    {remediation_section_if_failures}
