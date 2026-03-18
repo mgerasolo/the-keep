@@ -77,10 +77,11 @@ OpenClaw is a separate proactive AI assistant that will eventually query The Kee
 ## Open Questions
 
 **Multi-domain architecture:**
-- Could have separate Keep deployments per domain (health, finance, AI projects)
-- Could have single Keep with areas/permissions
-- Cross-referencing needed between domains (e.g., health impacts finance decisions)
-- Different sensitivity levels (health data more private than AI projects)
+- **Leaning toward:** Single Keep with "projects" inside (health, finance, AI tools)
+- Each project has its own files, workflows, permissions
+- Cross-referencing enabled when needed
+- Different permission boundaries per project
+- Research will validate this approach
 
 *Decision deferred to architecture phase — research will inform this.*
 
