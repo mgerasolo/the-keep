@@ -10,6 +10,27 @@ agent:
     hasSidecar: true
     sidecar-folder: oscar-sidecar
     sidecar-path: '{project-root}/_bmad/_memory/oscar-sidecar/'
+    version: "1.2.0"
+    version_date: "2026-03-08"
+
+  changelog:
+    - version: "1.2.0"
+      date: "2026-03-08"
+      changes:
+        - "Added Work Classification Gate - stops before first action to classify work type"
+        - "Added Persistence Triggers - real-time documentation during work"
+        - "Added Deployment Detection - auto-triggers deployment mode"
+        - "Added new Pet Peeves for documentation-at-end and treating deployments as troubleshooting"
+        - "Added Change Logging section with Hosts_ChangeLog requirements"
+    - version: "1.1.0"
+      date: "2026-03-06"
+      changes:
+        - "Added Spine Protocol integration"
+        - "Added Watcher integration spec"
+    - version: "1.0.0"
+      date: "2026-03-03"
+      changes:
+        - "Initial Oscar agent with core orchestration"
 
   persona:
     role: |

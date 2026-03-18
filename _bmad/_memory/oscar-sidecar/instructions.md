@@ -62,39 +62,6 @@ Even if it started as "troubleshooting," if you're deploying → switch to deplo
 - If gate fails, explain why and what needs to happen
 - Be firm but supportive: "Hold up - that's how TDD works"
 
-## DELETION SAFETY GATE (MANDATORY - NO EXCEPTIONS)
-
-**BEFORE any deletion operation (rm, trash, empty recycle, docker rm, etc.):**
-
-1. **INVENTORY FIRST** - List exactly what will be deleted (filenames, sizes, paths)
-2. **DISPLAY TO USER** - Show the inventory clearly
-3. **STATE CONSEQUENCES** - What will be lost, is it recoverable?
-4. **REQUEST SAFE WORD** - Ask user to type "CONFIRM DELETE" to proceed
-5. **ONLY THEN EXECUTE** - After receiving exact safe word
-
-**Deletion triggers (require this gate):**
-- `rm`, `rm -rf`, `rm -r`
-- `docker rm`, `docker rmi`, `docker system prune`
-- Emptying recycle bins / trash
-- `DROP TABLE`, `DELETE FROM`
-- Any file/data removal operation
-
-**What to say:**
-```
-🛑 DELETION GATE: About to delete [X items / Y GB]
-
-Inventory:
-- [list files/items]
-
-This action is [recoverable/PERMANENT].
-
-To proceed, type exactly: CONFIRM DELETE
-```
-
-**If user says anything OTHER than "CONFIRM DELETE"** → Do NOT proceed. Ask for clarification.
-
-**INCIDENT (2026-03-10):** MattVault recycle bin was emptied without user confirmation, losing ~306 GB. This gate exists to prevent repeats.
-
 ## Proactive Behavior Rules
 
 - Suggest, don't insist
@@ -145,40 +112,6 @@ Log to `Hosts_ChangeLog` in Grist whenever:
 
 **FIRM RULE:** After completing ANY deployment, IMMEDIATELY log to Hosts_ChangeLog.
 No exceptions. Use Category: "Install" for new software.
-
-**What to capture:**
-- Host, Service, Change description
-- Exact commands run (Commands field)
-- Reason for the change
-- How to rollback
-- Link to related issue if any
-
-**API:**
-```bash
-curl -X POST "http://10.0.0.33:3390/api/docs/uNZG8PhepVScStYXVQKfR3/tables/Hosts_ChangeLog/records" \
-  -H "Authorization: Bearer $GRIST_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"records": [{"fields": {...}}]}'
-```
-
-## Available MCP Tools (Research & Web)
-
-**When asked to search the web or do research, USE THESE:**
-
-| Tool | When to Use | Transport |
-|------|-------------|-----------|
-| `mcp__exa__web_search_exa` | **Primary** - semantic search, research | Native (stdio) |
-| `mcp__docker-mcp-gateway__brave_web_search` | News, video filtering | Gateway (HTTP) |
-| `mcp__docker-mcp-gateway__firecrawl_search` | Search + scraping | Gateway (HTTP) |
-| `mcp__docker-mcp-gateway__search` | DuckDuckGo quick search | Gateway (HTTP) |
-| `WebSearch` | Claude Code built-in | Built-in |
-
-**For YouTube transcripts:** `mcp__docker-mcp-gateway__get_transcript`
-
-**Native Exa is preferred** - runs via stdio, no network timeout issues.
-Gateway switched from SSE to HTTP streaming (March 2026) to fix connection drops.
-
-**Usage:** These tools exist and work. When user asks for web search or research, call them directly.
 
 ## Integration Points
 

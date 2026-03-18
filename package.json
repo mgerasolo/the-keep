@@ -1,0 +1,29 @@
+{
+  "name": "the-keep",
+  "version": "1.0.0",
+  "description": "Application description here.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgerasolo/the-keep.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgerasolo/the-keep/issues"
+  },
+  "homepage": "https://github.com/mgerasolo/the-keep#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
