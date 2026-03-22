@@ -7,7 +7,7 @@ This file provides guidance to Claude Code when working with the the-keep codeba
 Application description here.
 
 **Target Environment:** Banner (10.0.0.33)
-**Port Block:** {{PORT_BLOCK}} (web=3352)
+**Port Block:** 5010-5019 (web=5010)
 **Domain:** the-keep.nextlevelguild.com
 
 ## Critical Rules
@@ -21,14 +21,14 @@ Application description here.
 **URLs - Never localhost:**
 - **NEVER use localhost or 127.0.0.1** - containers run on remote VMs
 - **Preferred:** Fully qualified domain (requires Traefik setup)
-- **Acceptable:** VM IP with port (e.g., `http://10.0.0.33:3352`)
+- **Acceptable:** VM IP with port (e.g., `http://10.0.0.33:5010`)
 
 ```bash
 # BEST - domain via Traefik
 https://the-keep.nextlevelguild.com
 
 # OK - direct IP to container host
-http://10.0.0.33:3352
+http://10.0.0.33:5010
 
 # WRONG - will not work (container not on your machine)
 http://localhost:3352

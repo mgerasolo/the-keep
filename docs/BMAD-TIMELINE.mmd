@@ -1,0 +1,35 @@
+%%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '12px'}}}%%
+flowchart TB
+    subgraph SETUP["SETUP (one-time)"]
+        direction TB
+        S1["1. Brief<br/>/bmad-create-product-brief"]
+        S2["2. PRD<br/>/bmad-create-prd"]
+        S3["3. Architecture<br/>/bmad-create-architecture"]
+        S4["4. UX Design<br/>/bmad-create-ux-design"]
+        S5["5. Epics & Stories<br/>/bmad-create-epics-and-stories"]
+        S6["6. Sprint Planning<br/>/bmad-sprint-planning"]
+
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    end
+
+    subgraph LOOP["STORY LOOP (repeat)"]
+        direction TB
+        L7["7. Create Story<br/>/bmad-create-story"]
+        L8["8. Dev Story<br/>/bmad-dev-story"]
+        L9["9. Code Review<br/>/bmad-code-review"]
+
+        L7 --> L8 --> L9
+        L9 -.->|"next story"| L7
+    end
+
+    S6 --> LOOP
+
+    style S1 fill:#f59e0b,stroke:#fbbf24,color:#000
+    style S2 fill:#374151,stroke:#6b7280
+    style S3 fill:#374151,stroke:#6b7280
+    style S4 fill:#374151,stroke:#6b7280
+    style S5 fill:#374151,stroke:#6b7280
+    style S6 fill:#374151,stroke:#6b7280
+    style L7 fill:#374151,stroke:#6b7280
+    style L8 fill:#374151,stroke:#6b7280
+    style L9 fill:#374151,stroke:#6b7280
