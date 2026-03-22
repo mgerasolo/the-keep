@@ -1,0 +1,11 @@
+# Archived v1 implementation (Next.js from-scratch build)
+# Pivoting to LobeChat-based approach
+_archived/
+
+# Build artifacts
+.next/
+node_modules/
+dist/
+
+# Screenshots from development
+*.png
