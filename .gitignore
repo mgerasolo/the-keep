@@ -44,3 +44,14 @@ yarn-error.log*
 .cache/
 coverage/
 *.local
+
+# === Next.js backups ===
+.next-backup-*/
+.next-old-*/
+
+# === Playwright MCP ===
+.playwright-mcp/
+
+# === Claude Code (local state) ===
+.claude/db/
+.claude/worktrees/
