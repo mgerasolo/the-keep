@@ -1,0 +1,70 @@
+{
+  "name": "the-keep",
+  "version": "1.0.0",
+  "description": "Application description here.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgerasolo/the-keep.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgerasolo/the-keep/issues"
+  },
+  "homepage": "https://github.com/mgerasolo/the-keep#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.5.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.0.3",
+    "jsdom": "^29.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@tailwindcss/postcss": "^4.2.1",
+    "autoprefixer": "^10.4.27",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "geist": "^1.7.0",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.577.0",
+    "next": "^16.1.7",
+    "postcss": "^8.5.8",
+    "react": "^19.2.4",
+    "react-arborist": "^3.4.3",
+    "react-dom": "^19.2.4",
+    "react-dropzone": "^15.0.0",
+    "react-markdown": "^10.1.0",
+    "react-resizable-panels": "^4.7.3",
+    "rehype-pretty-code": "^0.14.3",
+    "shiki": "^4.0.2",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.1",
+    "zustand": "^5.0.12"
+  }
+}

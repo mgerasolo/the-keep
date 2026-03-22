@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  the-keep:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: the-keep
+    ports:
+      - "5010:3000"
+    environment:
+      - NODE_ENV=production
+      - VAULT_PATH=/app/vault
+    volumes:
+      - ./vault:/app/vault
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.the-keep.rule=Host(`the-keep.nextlevelguild.com`)"
+      - "traefik.http.routers.the-keep.entrypoints=websecure"
+      - "traefik.http.routers.the-keep.tls.certresolver=cloudflare"
+      - "traefik.http.services.the-keep.loadbalancer.server.port=3000"
