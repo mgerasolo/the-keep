@@ -1,0 +1,25 @@
+# BMAD Session State - please
+# Auto-created: 2026-03-22T16:14:36-04:00
+# Session UUID: 4b9c337b-20b6-47c5-a0e1-341b866d8267
+
+name: "please"
+session_id: "4b9c337b-20b6-47c5-a0e1-341b866d8267"
+created: "2026-03-22T16:14:36-04:00"
+status: "active"
+
+# Tracking
+prompt_count: 1
+compaction_count: 0
+last_activity: "2026-03-22T16:14:36-04:00"
+parent_name: null
+tags: []
+
+# Workflow/Agent state - STARTS FRESH (no inheritance from other sessions!)
+current_workflow: null
+current_agent: null
+workflow_state: null
+phase: null
+
+context:
+  project_name: "the-keep"
+  first_message: "git commit in batches what we have so far "

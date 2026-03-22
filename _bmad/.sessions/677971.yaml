@@ -1,0 +1,25 @@
+# BMAD Session State - 677971
+# Auto-created: 2026-03-22T00:23:45-04:00
+# Session UUID: 5c4d6f11-a34c-4cab-9e05-ccd1eeb61089
+
+name: "677971"
+session_id: "5c4d6f11-a34c-4cab-9e05-ccd1eeb61089"
+created: "2026-03-22T00:23:45-04:00"
+status: "active"
+
+# Tracking
+prompt_count: 106
+compaction_count: 0
+last_activity: "2026-03-22T16:12:49-04:00"
+parent_name: null
+tags: []
+
+# Workflow/Agent state - STARTS FRESH (no inheritance from other sessions!)
+current_workflow: null
+current_agent: null
+workflow_state: null
+phase: null
+
+context:
+  project_name: "the-keep"
+  first_message: "this was the code if you can use it "
