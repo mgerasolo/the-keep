@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  lobechat:
+    image: lobehub/lobe-chat:latest
+    container_name: the-keep-lobechat
+    restart: unless-stopped
+    ports:
+      - "5011:3210"
+    environment:
+      # OpenAI-compatible endpoint (LiteLLM)
+      - OPENAI_API_KEY=${LITELLM_API_KEY}
+      - OPENAI_PROXY_URL=${LITELLM_URL:-http://10.0.0.27:2764/v1}
+
+      # Default model
+      - DEFAULT_AGENT_CONFIG=model=${DEFAULT_MODEL:-claude-sonnet-4-20250514}
+
+      # Auth settings
+      - NEXT_AUTH_SECRET=${NEXTAUTH_SECRET}
+      - ACCESS_CODE=${ACCESS_CODE:-}
+
+      # Enable plugins/MCP
+      - PLUGINS_INDEX_URL=https://chat-plugins.lobehub.com
+
+      # Feature flags
+      - FEATURE_FLAGS=${FEATURE_FLAGS:-+tools,+plugins,+upload}
+
+    volumes:
+      - lobechat-data:/app/data
+    networks:
+      - the-keep
+
+volumes:
+  lobechat-data:
+
+networks:
+  the-keep:
+    driver: bridge

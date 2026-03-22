@@ -1,0 +1,176 @@
+# Dify Image & Video Generation Tools
+# ====================================
+#
+# Collection of HTTP tools for various image/video providers.
+# Import these into Dify → Tools → Create Tool → HTTP Request
+
+---
+# =============================================================================
+# MIDJOURNEY via LegNext
+# =============================================================================
+midjourney:
+  name: midjourney_imagine
+  label: Midjourney (LegNext)
+  description: Generate images with Midjourney v7/v6
+  endpoint: https://api.legnext.ai/api/v1/imagine
+  method: POST
+  headers:
+    Authorization: "Bearer ${LEGNEXT_API_KEY}"
+    Content-Type: "application/json"
+  body:
+    prompt: "${prompt}"
+    model: "${model|v7}"
+    aspect_ratio: "${aspect_ratio|1:1}"
+    mode: "${mode|fast}"
+  pricing: "$0.02-0.08 per image"
+  signup: https://legnext.ai
+
+---
+# =============================================================================
+# FLUX via Replicate
+# =============================================================================
+flux:
+  name: flux_generate
+  label: Flux Image Generation
+  description: Generate images with Flux Pro/Dev/Schnell
+  endpoint: https://api.replicate.com/v1/predictions
+  method: POST
+  headers:
+    Authorization: "Token ${REPLICATE_API_TOKEN}"
+    Content-Type: "application/json"
+  body:
+    version: "black-forest-labs/flux-pro"
+    input:
+      prompt: "${prompt}"
+      aspect_ratio: "${aspect_ratio|1:1}"
+      output_format: "png"
+      safety_tolerance: 2
+  pricing: "$0.055 per image (Pro)"
+  signup: https://replicate.com
+
+---
+# =============================================================================
+# STABLE DIFFUSION via Stability AI
+# =============================================================================
+stable_diffusion:
+  name: sd_generate
+  label: Stable Diffusion 3.5
+  description: Generate images with Stable Diffusion
+  endpoint: https://api.stability.ai/v2beta/stable-image/generate/sd3
+  method: POST
+  headers:
+    Authorization: "Bearer ${STABILITY_API_KEY}"
+    Content-Type: "multipart/form-data"
+  body:
+    prompt: "${prompt}"
+    negative_prompt: "${negative_prompt|}"
+    aspect_ratio: "${aspect_ratio|1:1}"
+    output_format: "png"
+  pricing: "$0.04-0.08 per image"
+  signup: https://platform.stability.ai
+
+---
+# =============================================================================
+# IDEOGRAM
+# =============================================================================
+ideogram:
+  name: ideogram_generate
+  label: Ideogram 2.0
+  description: Best for text in images and logos
+  endpoint: https://api.ideogram.ai/generate
+  method: POST
+  headers:
+    Api-Key: "${IDEOGRAM_API_KEY}"
+    Content-Type: "application/json"
+  body:
+    image_request:
+      prompt: "${prompt}"
+      aspect_ratio: "${aspect_ratio|ASPECT_1_1}"
+      model: "V_2"
+      magic_prompt_option: "AUTO"
+  pricing: "$0.02-0.08 per image"
+  signup: https://ideogram.ai
+
+---
+# =============================================================================
+# RUNWAY (Video Generation)
+# =============================================================================
+runway_video:
+  name: runway_generate
+  label: Runway Gen-3 Video
+  description: Generate video from text or image
+  endpoint: https://api.runwayml.com/v1/generations
+  method: POST
+  headers:
+    Authorization: "Bearer ${RUNWAY_API_KEY}"
+    Content-Type: "application/json"
+  body:
+    model: "gen3a_turbo"
+    prompt: "${prompt}"
+    duration: "${duration|5}"
+    aspect_ratio: "${aspect_ratio|16:9}"
+  pricing: "$0.05 per second of video"
+  signup: https://runwayml.com/api
+
+---
+# =============================================================================
+# KLING (Video Generation)
+# =============================================================================
+kling_video:
+  name: kling_generate
+  label: Kling AI Video
+  description: Generate video with Kling
+  endpoint: https://api.klingai.com/v1/videos/generations
+  method: POST
+  headers:
+    Authorization: "Bearer ${KLING_API_KEY}"
+    Content-Type: "application/json"
+  body:
+    prompt: "${prompt}"
+    duration: "${duration|5}"
+    aspect_ratio: "${aspect_ratio|16:9}"
+    model: "kling-v1"
+  pricing: "~$0.10 per 5-second clip"
+  signup: https://klingai.com
+
+---
+# =============================================================================
+# LUMA DREAM MACHINE (Video Generation)
+# =============================================================================
+luma_video:
+  name: luma_generate
+  label: Luma Dream Machine
+  description: Generate video with Luma AI
+  endpoint: https://api.lumalabs.ai/dream-machine/v1/generations
+  method: POST
+  headers:
+    Authorization: "Bearer ${LUMA_API_KEY}"
+    Content-Type: "application/json"
+  body:
+    prompt: "${prompt}"
+    aspect_ratio: "${aspect_ratio|16:9}"
+    loop: false
+  pricing: "~$0.05 per generation"
+  signup: https://lumalabs.ai/dream-machine/api
+
+---
+# =============================================================================
+# SUMMARY: Provider Comparison
+# =============================================================================
+#
+# IMAGE GENERATION:
+# | Provider        | Quality    | Speed   | Cost      | Best For              |
+# |-----------------|------------|---------|-----------|----------------------|
+# | Midjourney v7   | Excellent  | Fast    | $0.02-08  | Artistic, aesthetic   |
+# | Flux Pro        | Excellent  | Medium  | $0.055    | Photorealistic        |
+# | Stable Diff 3.5 | Very Good  | Fast    | $0.04-08  | Versatile, local opt  |
+# | Ideogram 2.0    | Very Good  | Fast    | $0.02-08  | Text in images        |
+# | Nano Banana     | Good       | Fast    | $0.04     | Integrated w/ Gemini  |
+#
+# VIDEO GENERATION:
+# | Provider        | Quality    | Length  | Cost      | Best For              |
+# |-----------------|------------|---------|-----------|----------------------|
+# | Runway Gen-3    | Excellent  | 5-10s   | $0.05/s   | Cinematic, control    |
+# | Kling           | Excellent  | 5-10s   | $0.10/5s  | Motion, realism       |
+# | Luma            | Very Good  | 5s      | $0.05     | Quick generations     |
+# | Veo 3.1         | Excellent  | 8s      | Varies    | Google ecosystem      |

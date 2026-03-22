@@ -1,0 +1,238 @@
+# Dify Workflow: Universal Image Generator
+# =========================================
+#
+# This workflow routes image generation requests to different providers
+# based on user selection or automatic best-fit routing.
+#
+# To import:
+# 1. Go to Dify Studio → Create App → Import DSL
+# 2. Select this file
+#
+# Requirements:
+# - LiteLLM configured with Nano Banana
+# - API keys for: LegNext, Replicate, Stability (as needed)
+
+app:
+  name: "The Keep - Image Generator"
+  description: "Universal image generation with multiple providers"
+  icon: "🎨"
+  mode: workflow
+
+variables:
+  - name: prompt
+    type: string
+    label: "Image Prompt"
+    required: true
+    description: "Describe the image you want to generate"
+
+  - name: provider
+    type: select
+    label: "Provider"
+    required: false
+    default: "auto"
+    options:
+      - value: "auto"
+        label: "Auto (Best fit)"
+      - value: "nano-banana"
+        label: "Nano Banana (Google)"
+      - value: "midjourney"
+        label: "Midjourney v7"
+      - value: "flux"
+        label: "Flux Pro"
+      - value: "stable-diffusion"
+        label: "Stable Diffusion 3.5"
+      - value: "ideogram"
+        label: "Ideogram (text in images)"
+
+  - name: aspect_ratio
+    type: select
+    label: "Aspect Ratio"
+    required: false
+    default: "1:1"
+    options:
+      - value: "1:1"
+        label: "Square (1:1)"
+      - value: "16:9"
+        label: "Landscape (16:9)"
+      - value: "9:16"
+        label: "Portrait (9:16)"
+      - value: "4:3"
+        label: "Standard (4:3)"
+
+# Workflow Graph
+graph:
+  nodes:
+    # 1. Start
+    - id: start
+      type: start
+      data:
+        variables:
+          - prompt
+          - provider
+          - aspect_ratio
+
+    # 2. Router - Decide which provider to use
+    - id: router
+      type: llm
+      data:
+        model: "jarvis-chat"
+        prompt: |
+          Analyze this image generation request and select the best provider.
+
+          User prompt: {{prompt}}
+          User selected provider: {{provider}}
+
+          If provider is "auto", select based on prompt:
+          - "midjourney" - for artistic, aesthetic, fantasy, illustration
+          - "flux" - for photorealistic, portraits, products
+          - "ideogram" - for text, logos, typography
+          - "nano-banana" - for general purpose, fast
+          - "stable-diffusion" - for specific styles, anime
+
+          If provider is specified, use that.
+
+          Respond with ONLY the provider name, nothing else.
+        output_schema:
+          selected_provider:
+            type: string
+
+    # 3. Branch by provider
+    - id: branch
+      type: if-else
+      data:
+        conditions:
+          - id: is_nano_banana
+            condition: "{{router.selected_provider}} == 'nano-banana'"
+          - id: is_midjourney
+            condition: "{{router.selected_provider}} == 'midjourney'"
+          - id: is_flux
+            condition: "{{router.selected_provider}} == 'flux'"
+          - id: is_ideogram
+            condition: "{{router.selected_provider}} == 'ideogram'"
+        default: stable_diffusion
+
+    # 4a. Nano Banana (via LiteLLM/Gemini)
+    - id: nano_banana
+      type: llm
+      data:
+        model: "gemini/gemini-2.5-flash-image"
+        modalities: ["image", "text"]
+        prompt: "Generate an image: {{prompt}}"
+
+    # 4b. Midjourney (via LegNext)
+    - id: midjourney
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.legnext.ai/api/v1/imagine"
+        headers:
+          Authorization: "Bearer {{env.LEGNEXT_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          prompt: "{{prompt}}"
+          model: "v7"
+          aspect_ratio: "{{aspect_ratio}}"
+          mode: "fast"
+
+    # 4c. Flux (via Replicate)
+    - id: flux
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.replicate.com/v1/predictions"
+        headers:
+          Authorization: "Token {{env.REPLICATE_API_TOKEN}}"
+          Content-Type: "application/json"
+        body:
+          version: "black-forest-labs/flux-pro"
+          input:
+            prompt: "{{prompt}}"
+            aspect_ratio: "{{aspect_ratio}}"
+
+    # 4d. Ideogram
+    - id: ideogram
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.ideogram.ai/generate"
+        headers:
+          Api-Key: "{{env.IDEOGRAM_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          image_request:
+            prompt: "{{prompt}}"
+            aspect_ratio: "ASPECT_{{aspect_ratio | replace(':', '_')}}"
+            model: "V_2"
+
+    # 4e. Stable Diffusion (default)
+    - id: stable_diffusion
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.stability.ai/v2beta/stable-image/generate/sd3"
+        headers:
+          Authorization: "Bearer {{env.STABILITY_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          prompt: "{{prompt}}"
+          aspect_ratio: "{{aspect_ratio}}"
+
+    # 5. Merge results
+    - id: merge
+      type: variable-assigner
+      data:
+        output:
+          - name: image_url
+            value: "{{nano_banana.image_url || midjourney.images[0] || flux.output[0] || ideogram.data[0].url || stable_diffusion.image}}"
+          - name: provider_used
+            value: "{{router.selected_provider}}"
+
+    # 6. End
+    - id: end
+      type: end
+      data:
+        outputs:
+          - image_url
+          - provider_used
+          - prompt
+
+  # Edge connections
+  edges:
+    - source: start
+      target: router
+    - source: router
+      target: branch
+    - source: branch
+      sourceHandle: is_nano_banana
+      target: nano_banana
+    - source: branch
+      sourceHandle: is_midjourney
+      target: midjourney
+    - source: branch
+      sourceHandle: is_flux
+      target: flux
+    - source: branch
+      sourceHandle: is_ideogram
+      target: ideogram
+    - source: branch
+      sourceHandle: default
+      target: stable_diffusion
+    - source: nano_banana
+      target: merge
+    - source: midjourney
+      target: merge
+    - source: flux
+      target: merge
+    - source: ideogram
+      target: merge
+    - source: stable_diffusion
+      target: merge
+    - source: merge
+      target: end
+
+# Environment Variables Required
+env_vars:
+  - LEGNEXT_API_KEY
+  - REPLICATE_API_TOKEN
+  - STABILITY_API_KEY
+  - IDEOGRAM_API_KEY

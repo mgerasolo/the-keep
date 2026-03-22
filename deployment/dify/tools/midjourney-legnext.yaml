@@ -1,0 +1,84 @@
+# Dify Custom HTTP Tool: Midjourney via LegNext
+#
+# To import in Dify:
+# 1. Go to Tools → Create Tool → HTTP Request
+# 2. Copy these settings
+#
+# Provider: LegNext.ai (https://legnext.ai)
+# Get API Key: https://legnext.ai/dashboard
+# Free tier: 200 credits to start
+
+name: midjourney_imagine
+label: Midjourney Image Generation
+description: Generate images using Midjourney v7/v6 via LegNext API
+
+# API Configuration
+endpoint: https://api.legnext.ai/api/v1/imagine
+method: POST
+
+headers:
+  Authorization: "Bearer ${credentials.legnext_api_key}"
+  Content-Type: "application/json"
+
+# Request Body Schema
+body:
+  prompt:
+    type: string
+    required: true
+    description: "Image generation prompt"
+  model:
+    type: string
+    required: false
+    default: "v7"
+    enum: ["v7", "v6.1", "v6", "niji6"]
+    description: "Midjourney model version"
+  aspect_ratio:
+    type: string
+    required: false
+    default: "1:1"
+    enum: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"]
+    description: "Image aspect ratio"
+  mode:
+    type: string
+    required: false
+    default: "fast"
+    enum: ["fast", "turbo", "relax"]
+    description: "Generation speed mode"
+  webhook_url:
+    type: string
+    required: false
+    description: "Callback URL for async notification"
+
+# Example Request
+example_request: |
+  {
+    "prompt": "a futuristic city at sunset, cyberpunk style --ar 16:9",
+    "model": "v7",
+    "aspect_ratio": "16:9",
+    "mode": "fast"
+  }
+
+# Response Schema
+response:
+  task_id:
+    type: string
+    description: "Async task ID for polling"
+  status:
+    type: string
+    description: "pending, processing, completed, failed"
+  images:
+    type: array
+    description: "Array of generated image URLs (when completed)"
+
+# Credential Configuration
+credentials:
+  legnext_api_key:
+    type: secret
+    label: "LegNext API Key"
+    description: "Get from https://legnext.ai/dashboard"
+    required: true
+
+# Pricing (as of March 2026)
+# - Fast mode: ~$0.04/image
+# - Turbo mode: ~$0.08/image
+# - Relax mode: ~$0.02/image

@@ -1,0 +1,221 @@
+# Dify Workflow: Video Generator
+# ===============================
+#
+# This workflow generates videos using various providers:
+# - Veo 3.1 (Google) - via LiteLLM
+# - Runway Gen-3 - via API
+# - Kling - via API
+# - Luma Dream Machine - via API
+#
+# To import:
+# 1. Go to Dify Studio → Create App → Import DSL
+# 2. Select this file
+
+app:
+  name: "The Keep - Video Generator"
+  description: "Generate videos from text or images"
+  icon: "🎬"
+  mode: workflow
+
+variables:
+  - name: prompt
+    type: string
+    label: "Video Prompt"
+    required: true
+    description: "Describe the video you want to generate"
+
+  - name: provider
+    type: select
+    label: "Provider"
+    required: false
+    default: "veo"
+    options:
+      - value: "veo"
+        label: "Veo 3.1 (Google)"
+      - value: "runway"
+        label: "Runway Gen-3"
+      - value: "kling"
+        label: "Kling AI"
+      - value: "luma"
+        label: "Luma Dream Machine"
+
+  - name: duration
+    type: select
+    label: "Duration"
+    required: false
+    default: "5"
+    options:
+      - value: "4"
+        label: "4 seconds"
+      - value: "5"
+        label: "5 seconds"
+      - value: "6"
+        label: "6 seconds"
+      - value: "8"
+        label: "8 seconds"
+
+  - name: aspect_ratio
+    type: select
+    label: "Aspect Ratio"
+    required: false
+    default: "16:9"
+    options:
+      - value: "16:9"
+        label: "Landscape (16:9)"
+      - value: "9:16"
+        label: "Portrait (9:16)"
+      - value: "1:1"
+        label: "Square (1:1)"
+
+# Workflow Graph
+graph:
+  nodes:
+    # 1. Start
+    - id: start
+      type: start
+      data:
+        variables:
+          - prompt
+          - provider
+          - duration
+          - aspect_ratio
+
+    # 2. Branch by provider
+    - id: branch
+      type: if-else
+      data:
+        conditions:
+          - id: is_veo
+            condition: "{{provider}} == 'veo'"
+          - id: is_runway
+            condition: "{{provider}} == 'runway'"
+          - id: is_kling
+            condition: "{{provider}} == 'kling'"
+        default: luma
+
+    # 3a. Veo (via Gemini API / Vertex AI)
+    - id: veo
+      type: http-request
+      data:
+        method: POST
+        url: "https://generativelanguage.googleapis.com/v1beta/models/veo-3.1:generateVideo"
+        headers:
+          Authorization: "Bearer {{env.GOOGLE_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          prompt: "{{prompt}}"
+          videoDuration: "{{duration}}s"
+          aspectRatio: "{{aspect_ratio}}"
+          personGeneration: "allowed"
+
+    # 3b. Runway Gen-3
+    - id: runway
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.runwayml.com/v1/generations"
+        headers:
+          Authorization: "Bearer {{env.RUNWAY_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          model: "gen3a_turbo"
+          prompt: "{{prompt}}"
+          duration: "{{duration}}"
+          aspect_ratio: "{{aspect_ratio}}"
+
+    # 3c. Kling
+    - id: kling
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.klingai.com/v1/videos/generations"
+        headers:
+          Authorization: "Bearer {{env.KLING_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          prompt: "{{prompt}}"
+          duration: "{{duration}}"
+          aspect_ratio: "{{aspect_ratio}}"
+          model: "kling-v1"
+
+    # 3d. Luma (default)
+    - id: luma
+      type: http-request
+      data:
+        method: POST
+        url: "https://api.lumalabs.ai/dream-machine/v1/generations"
+        headers:
+          Authorization: "Bearer {{env.LUMA_API_KEY}}"
+          Content-Type: "application/json"
+        body:
+          prompt: "{{prompt}}"
+          aspect_ratio: "{{aspect_ratio}}"
+          loop: false
+
+    # 4. Wait for generation (async polling would go here)
+    - id: poll_status
+      type: code
+      data:
+        language: python
+        code: |
+          # Video generation is async - this placeholder shows where polling goes
+          # In production, implement webhook callbacks or polling logic
+          import json
+
+          result = {
+            "status": "pending",
+            "message": "Video generation started. Check provider dashboard for status.",
+            "provider": provider,
+            "prompt": prompt
+          }
+
+          return result
+
+    # 5. End
+    - id: end
+      type: end
+      data:
+        outputs:
+          - video_url
+          - provider
+          - status
+
+  # Edge connections
+  edges:
+    - source: start
+      target: branch
+    - source: branch
+      sourceHandle: is_veo
+      target: veo
+    - source: branch
+      sourceHandle: is_runway
+      target: runway
+    - source: branch
+      sourceHandle: is_kling
+      target: kling
+    - source: branch
+      sourceHandle: default
+      target: luma
+    - source: veo
+      target: poll_status
+    - source: runway
+      target: poll_status
+    - source: kling
+      target: poll_status
+    - source: luma
+      target: poll_status
+    - source: poll_status
+      target: end
+
+# Environment Variables Required
+env_vars:
+  - GOOGLE_API_KEY
+  - RUNWAY_API_KEY
+  - KLING_API_KEY
+  - LUMA_API_KEY
+
+# Notes:
+# - Video generation is async (takes 30s-5min)
+# - Most APIs return a task_id that needs polling
+# - Consider implementing webhook callbacks for production
+# - Veo requires Vertex AI or Gemini API access
