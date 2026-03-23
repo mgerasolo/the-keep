@@ -35,11 +35,7 @@ export async function getCurrentUser(): Promise<User | null> {
     const session: Session = JSON.parse(sessionCookie.value);
 
     // MVP: Query user from database
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, session.userId))
-      .limit(1);
+    const [user] = await db.select().from(users).where(eq(users.id, session.userId)).limit(1);
 
     return user ?? null;
   } catch (error) {
@@ -68,11 +64,7 @@ export async function requireUser(): Promise<User> {
  */
 export async function getSeededUser(): Promise<User | null> {
   try {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, SEEDED_USER_ID))
-      .limit(1);
+    const [user] = await db.select().from(users).where(eq(users.id, SEEDED_USER_ID)).limit(1);
 
     return user ?? null;
   } catch (error) {

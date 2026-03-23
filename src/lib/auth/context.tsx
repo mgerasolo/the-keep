@@ -24,11 +24,7 @@ interface UserProviderProps {
  * Provider component - wrap in layout with server-fetched user
  */
 export function UserProvider({ children, user }: UserProviderProps) {
-  return (
-    <UserContext.Provider value={{ user, isLoading: false }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, isLoading: false }}>{children}</UserContext.Provider>;
 }
 
 /**

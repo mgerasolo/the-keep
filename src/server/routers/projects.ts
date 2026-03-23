@@ -33,12 +33,7 @@ export const projectsRouter = router({
     const userProjects = await db
       .select()
       .from(projects)
-      .where(
-        and(
-          eq(projects.userId, ctx.user.id),
-          isNull(projects.archivedAt)
-        )
-      )
+      .where(and(eq(projects.userId, ctx.user.id), isNull(projects.archivedAt)))
       .orderBy(projects.createdAt);
 
     return userProjects;
@@ -53,12 +48,7 @@ export const projectsRouter = router({
       const [project] = await db
         .select()
         .from(projects)
-        .where(
-          and(
-            eq(projects.id, input.id),
-            eq(projects.userId, ctx.user.id)
-          )
-        )
+        .where(and(eq(projects.id, input.id), eq(projects.userId, ctx.user.id)))
         .limit(1);
 
       if (!project) {
@@ -74,57 +64,44 @@ export const projectsRouter = router({
   /**
    * Create a new project
    */
-  create: protectedProcedure
-    .input(createProjectSchema)
-    .mutation(async ({ ctx, input }) => {
-      const [project] = await db
-        .insert(projects)
-        .values({
-          userId: ctx.user.id,
-          name: input.name,
-          icon: input.icon,
-          description: input.description,
-        })
-        .returning();
+  create: protectedProcedure.input(createProjectSchema).mutation(async ({ ctx, input }) => {
+    const [project] = await db
+      .insert(projects)
+      .values({
+        userId: ctx.user.id,
+        name: input.name,
+        icon: input.icon,
+        description: input.description,
+      })
+      .returning();
 
-      return project;
-    }),
+    return project;
+  }),
 
   /**
    * Update a project
    */
-  update: protectedProcedure
-    .input(updateProjectSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { id, ...updates } = input;
+  update: protectedProcedure.input(updateProjectSchema).mutation(async ({ ctx, input }) => {
+    const { id, ...updates } = input;
 
-      // Verify ownership
-      const [existing] = await db
-        .select()
-        .from(projects)
-        .where(
-          and(
-            eq(projects.id, id),
-            eq(projects.userId, ctx.user.id)
-          )
-        )
-        .limit(1);
+    // Verify ownership
+    const [existing] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, id), eq(projects.userId, ctx.user.id)))
+      .limit(1);
 
-      if (!existing) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Project not found',
-        });
-      }
+    if (!existing) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Project not found',
+      });
+    }
 
-      const [project] = await db
-        .update(projects)
-        .set(updates)
-        .where(eq(projects.id, id))
-        .returning();
+    const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
 
-      return project;
-    }),
+    return project;
+  }),
 
   /**
    * Archive a project (soft delete)
@@ -136,12 +113,7 @@ export const projectsRouter = router({
       const [existing] = await db
         .select()
         .from(projects)
-        .where(
-          and(
-            eq(projects.id, input.id),
-            eq(projects.userId, ctx.user.id)
-          )
-        )
+        .where(and(eq(projects.id, input.id), eq(projects.userId, ctx.user.id)))
         .limit(1);
 
       if (!existing) {
@@ -169,12 +141,7 @@ export const projectsRouter = router({
       const [project] = await db
         .update(projects)
         .set({ archivedAt: null })
-        .where(
-          and(
-            eq(projects.id, input.id),
-            eq(projects.userId, ctx.user.id)
-          )
-        )
+        .where(and(eq(projects.id, input.id), eq(projects.userId, ctx.user.id)))
         .returning();
 
       if (!project) {

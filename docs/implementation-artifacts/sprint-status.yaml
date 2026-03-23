@@ -49,8 +49,8 @@ development_status:
   0-3-auth-ready-architecture: done
   0-4-api-layer-and-data-fetching: done
   0-5-toast-and-error-handling-framework: done
-  0-6-logging-and-observability: in-progress
-  0-7-ci-cd-pipeline: backlog
+  0-6-logging-and-observability: done
+  0-7-ci-cd-pipeline: in-progress
   0-8-testing-framework: backlog
   0-9-empty-states-and-loading-skeletons: backlog
   epic-0-retrospective: optional

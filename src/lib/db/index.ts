@@ -9,7 +9,8 @@ import postgres from 'postgres';
 import * as schema from './schema';
 
 // Get connection string from environment
-const connectionString = process.env.DATABASE_URL ?? 'postgresql://thekeep:password@localhost:5432/thekeep';
+const connectionString =
+  process.env.DATABASE_URL ?? 'postgresql://thekeep:password@localhost:5432/thekeep';
 
 // Create postgres.js client for queries
 // Using max 1 connection for serverless compatibility

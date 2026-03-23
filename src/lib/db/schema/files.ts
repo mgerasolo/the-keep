@@ -8,7 +8,9 @@ import { projects } from './projects';
 
 export const files = pgTable('files', {
   id: uuid('id').primaryKey().defaultRandom(),
-  projectId: uuid('project_id').references(() => projects.id).notNull(),
+  projectId: uuid('project_id')
+    .references(() => projects.id)
+    .notNull(),
   path: text('path').notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   mimeType: varchar('mime_type', { length: 127 }),

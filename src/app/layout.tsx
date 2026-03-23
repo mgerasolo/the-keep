@@ -6,7 +6,8 @@ import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'The Keep - Personal Knowledge Management',
-  description: 'AI-powered personal knowledge management system with transparent memory and file editing',
+  description:
+    'AI-powered personal knowledge management system with transparent memory and file editing',
 };
 
 export default async function RootLayout({

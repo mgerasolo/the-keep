@@ -10,9 +10,7 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">The Keep</h1>
-        <p className="text-foreground-secondary mb-8">
-          Personal Knowledge Management System
-        </p>
+        <p className="text-foreground-secondary mb-8">Personal Knowledge Management System</p>
 
         {user && (
           <div className="mb-8 p-4 bg-surface rounded-lg border border-border">

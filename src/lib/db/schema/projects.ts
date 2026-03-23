@@ -8,7 +8,9 @@ import { users } from './users';
 
 export const projects = pgTable('projects', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  userId: uuid('user_id')
+    .references(() => users.id)
+    .notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   icon: varchar('icon', { length: 50 }),
   description: text('description'),
