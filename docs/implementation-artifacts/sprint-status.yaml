@@ -1,0 +1,179 @@
+# generated: 2026-03-22
+# last_updated: 2026-03-22
+# project: the-keep
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: docs/implementation-artifacts/stories
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-03-22
+last_updated: 2026-03-22
+project: the-keep
+project_key: NOKEY
+tracking_system: file-system
+story_location: docs/implementation-artifacts/stories
+
+development_status:
+  # Epic 0: Infrastructure & Developer Foundation
+  epic-0: backlog
+  0-1-infrastructure-stack-deployment: backlog
+  0-2-database-schema-and-migrations: backlog
+  0-3-auth-ready-architecture: backlog
+  0-4-api-layer-and-data-fetching: backlog
+  0-5-toast-and-error-handling-framework: backlog
+  0-6-logging-and-observability: backlog
+  0-7-ci-cd-pipeline: backlog
+  0-8-testing-framework: backlog
+  0-9-empty-states-and-loading-skeletons: backlog
+  epic-0-retrospective: optional
+
+  # Epic 1: Project Foundation & File Workspace
+  epic-1: backlog
+  1-1-dockview-workspace-shell: backlog
+  1-2-activity-bar-and-project-context: backlog
+  1-3-project-crud: backlog
+  1-4-file-browser-panel: backlog
+  1-5-file-upload: backlog
+  1-6-folder-management: backlog
+  1-7-file-operations: backlog
+  1-8-document-viewers: backlog
+  1-9-layout-and-theme-persistence: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Markdown Editing & Knowledge Creation
+  epic-2: backlog
+  2-1-monaco-source-editor: backlog
+  2-2-tiptap-wysiwyg-editor: backlog
+  2-3-split-edit-preview-mode: backlog
+  2-4-rich-formatting-toolbar: backlog
+  2-5-slash-commands: backlog
+  2-6-bubble-menu-inline-formatting: backlog
+  2-7-tables-support: backlog
+  2-8-task-lists-checkboxes: backlog
+  2-9-code-blocks-with-syntax-highlighting: backlog
+  2-10-diff-viewer: backlog
+  2-11-file-version-history-panel: backlog
+  2-12-frontmatter-and-metadata-editor: backlog
+  2-13-markdown-auto-formatting: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: AI Conversation & RAG
+  epic-3: backlog
+  3-1-ai-chat-panel-as-dockview-tab: backlog
+  3-2-model-selection: backlog
+  3-3-context-aware-chat: backlog
+  3-4-chat-history-and-persistence: backlog
+  3-5-streaming-responses-with-code-blocks: backlog
+  3-6-automatic-file-indexing-rag-foundation: backlog
+  3-7-semantic-search: backlog
+  3-8-rag-enhanced-chat: backlog
+  3-9-explicit-index-inclusion-exclusion: backlog
+  3-10-hybrid-search-vector-fts: backlog
+  3-11-image-support-in-chat: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: AI File Editing (Core Differentiator)
+  epic-4: backlog
+  4-1-ai-edit-commands: backlog
+  4-2-diff-preview-before-apply: backlog
+  4-3-apply-reject-edit-actions: backlog
+  4-4-edit-undo-history: backlog
+  4-5-structure-preserving-edits: backlog
+  4-6-append-operations: backlog
+  4-7-remove-operations: backlog
+  4-8-update-operations: backlog
+  4-9-bulk-edit-warning: backlog
+  4-10-suggest-vs-auto-apply-mode: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Personal Knowledge & Memories
+  epic-5: backlog
+  5-1-memory-data-model: backlog
+  5-2-memory-grid-view-management-ui: backlog
+  5-3-memory-filtering-and-search: backlog
+  5-4-ai-memory-extraction: backlog
+  5-5-memory-provenance-display: backlog
+  5-6-memory-version-history: backlog
+  5-7-ai-context-integration: backlog
+  5-8-structured-inventories: backlog
+  5-9-personal-profiles: backlog
+  5-10-memory-categories-and-tags: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Project Context & Soul
+  epic-6: backlog
+  6-1-keep-context-directory: backlog
+  6-2-soul-discovery-wizard: backlog
+  6-3-project-instructions-ui: backlog
+  6-4-context-injection: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Data Safety & Version Control
+  epic-7: backlog
+  7-1-soft-delete-and-trash: backlog
+  7-2-file-version-auto-save: backlog
+  7-3-memory-recovery: backlog
+  7-4-edit-undo-stack: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Import & Migration
+  epic-8: backlog
+  8-1-bulk-file-upload: backlog
+  8-2-import-audit-and-report: backlog
+  8-3-format-conversion: backlog
+  8-4-pdf-text-extraction: backlog
+  8-5-markdown-cleanup: backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: Unified Search & Navigation
+  epic-9: backlog
+  9-1-command-palette-cmd-k: backlog
+  9-2-keyboard-navigation: backlog
+  9-3-omni-search-results: backlog
+  9-4-search-filters: backlog
+  9-5-saved-searches: backlog
+  epic-9-retrospective: optional
+
+  # Epic 10: AI Reliability & Feedback
+  epic-10: backlog
+  10-1-ai-health-check: backlog
+  10-2-graceful-degradation: backlog
+  10-3-response-rating: backlog
+  10-4-correction-tracking: backlog
+  epic-10-retrospective: optional
+
+  # Epic 11: Conversation Modes & Privacy
+  epic-11: backlog
+  11-1-normal-mode-default: backlog
+  11-2-incognito-mode: backlog
+  11-3-read-only-mode: backlog
+  11-4-mode-indicator-ui: backlog
+  epic-11-retrospective: optional

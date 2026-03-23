@@ -12,8 +12,8 @@ status: complete
 
 **Author:** Matt
 **Date:** 2026-03-22
-**Version:** 1.0
-**Status:** Complete
+**Version:** 1.1
+**Status:** Complete (PRD Party Mode Sync)
 
 ---
 
@@ -32,11 +32,16 @@ The Keep is a **web-based Cursor-like IDE for personal knowledge management**. T
 
 | Feature | ChatGPT/Other Tools | The Keep |
 |---------|---------------------|----------|
-| Memory System | Opaque paragraphs | Atomic key-value pairs, fully editable |
+| Memory System | Opaque paragraphs | Atomic key-value pairs, fully editable, versioned |
+| Memory Tiers | All-or-nothing | HOT/WARM/COLD tiers with context budget awareness |
 | File Management | Upload to chat | True file browser with folders |
 | Layout | Fixed panels | Dockable anywhere (VS Code-style) |
 | AI Integration | Separate interface | AI tab alongside files |
 | Model Selection | One model | Multiple local/API models with cost awareness |
+| AI Personas | Fixed personality | 5 toggleable personas (Coach, Teacher, etc.) |
+| Cross-Project | Siloed | Cross-project memory inbox with approval workflow |
+| Activity History | Hidden | Daily journal with timeline across all projects |
+| Privacy Mode | None | Incognito mode (no memory access or logging) |
 
 ---
 
@@ -1261,9 +1266,814 @@ See these tools for design inspiration:
 
 ---
 
-**Document Status:** Complete - Ready for Architecture Review
+## 15. Mockup Review Enhancements (2026-03-22)
+
+Three parallel mockups were built and reviewed. **Mockup A (Cursor-focused)** was selected as the base, with enhancements from B and C.
+
+### 15.1 Selected Base: Mockup A (Cursor-Focused)
+
+**Why A:**
+- Cleanest VS Code/Cursor mental model
+- Proper dockview panel structure
+- Command palette (Cmd+K) implemented
+- Settings with Soul Discovery wizard
+
+### 15.2 Required Enhancements
+
+#### Tab Bar Improvements
+| # | Enhancement | Priority | Source |
+|---|-------------|----------|--------|
+| 1 | **Split Controls** - Add "Add Tab", "Horizontal Split", "Vertical Split" buttons on far right of tab row | P0 | New |
+| 2 | **Tab Type Selector** - Menu to open different tab types: AI Chat, Browser, Workflow, Task List | P0 | New |
+| 3 | **Save Button + Indicator** - Per-tab save button, dirty indicator, hover menu with actions (history, save, etc.) | P0 | New |
+
+#### Header Bar (Full Width)
+| # | Enhancement | Priority | Source |
+|---|-------------|----------|--------|
+| 4 | **App-Wide Header** - Full width horizontal bar with search and global settings/actions | P0 | B |
+| 5 | **File Metadata Header** - Show last modified, backlinks count, full file path below tab bar | P1 | B |
+
+#### Left Sidebar Enhancements
+| # | Enhancement | Priority | Source |
+|---|-------------|----------|--------|
+| 6 | **Obsidian-Style Extensions** - Add extension icons below projects (like B's activity bar) | P1 | B |
+| 7 | **File Organization Tabs** - Files / Tags / Starred / Recent tabs in file browser | P0 | B |
+| 8 | **Star Files** - Ability to star/favorite files for quick access | P1 | B |
+| 9 | **Colorful Icons** - More colorful file/folder icons and tab names | P2 | C |
+
+#### Editor Panel Enhancements
+| # | Enhancement | Priority | Source |
+|---|-------------|----------|--------|
+| 10 | **Frontmatter Display** - Show Obsidian-style metadata (tags, date, source) at top of file | P1 | B |
+| 11 | **Line Numbers** - Toggleable line numbers (default on) | P0 | Cursor |
+| 12 | **Syntax Highlighting** - Proper syntax highlighting for markdown and code blocks | P0 | Cursor |
+| 13 | **Linting Visuals** - Visual cues for structure (similar to Cursor's text rendering) | P2 | Cursor |
+
+### 15.3 Updated Component Specifications
+
+#### Tab Bar (Updated)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│ [📄 bloodwork.md ●] [💬 AI Chat] [📋 Tasks]              [+ ▼] [║] [═] │
+│                                                          │     │   │   │
+│                                                          │     │   │   └── Vertical Split
+│                                                          │     │   └────── Horizontal Split
+│                                                          │     └────────── Add Tab (dropdown)
+│                                                          └──────────────── Tab Type Menu
+└──────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Tab Hover Menu:**
+```
+┌─────────────────────────────┐
+│ bloodwork.md           [●]  │  ← Dirty indicator
+├─────────────────────────────┤
+│ 💾 Save               ⌘S    │
+│ 📜 View History             │
+│ 📋 Copy Path                │
+│ ──────────────              │
+│ ✖️ Close              ⌘W    │
+│ ✖️ Close Others             │
+│ ✖️ Close All                │
+└─────────────────────────────┘
+```
+
+#### File Metadata Bar (New Component)
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│ /Labs/2026-03-bloodwork.md   │   📅 Modified 2 hours ago   │   🔗 3 backlinks      │
+└────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Sidebar File Browser Tabs (Updated)
+
+```
+┌────────────────────────────────────────┐
+│ [Files] [Tags] [⭐ Starred] [🕐 Recent]│
+├────────────────────────────────────────┤
+│ 🔍 Search files...                      │
+├────────────────────────────────────────┤
+│ 📁 Labs                                 │
+│   📄 2026-03-bloodwork.md          ⭐  │
+│   📄 2026-01-annual.md                  │
+│ 📁 Supplements                          │
+│   📄 daily-stack.md                ⭐  │
+└────────────────────────────────────────┘
+```
+
+#### Add Tab Menu (New Component)
+
+```
+┌─────────────────────────────┐
+│ + New Tab                   │
+├─────────────────────────────┤
+│ 📄 New File            ⌘N  │
+│ 💬 AI Chat             ⌘L  │
+│ 📋 Task List                │
+│ 🔄 Workflow                 │
+│ 🌐 Browser                  │
+│ 🧠 Memories                 │
+│ 👥 Trusted Sources          │
+└─────────────────────────────┘
+```
+
+### 15.4 Visual Improvements from C
+
+| Element | Current (A) | Enhanced |
+|---------|-------------|----------|
+| Folder Icons | Gray | Colored by content type (blue docs, green data, etc.) |
+| File Icons | Gray | Colored by file type (purple md, red pdf, orange json) |
+| Tab Names | White only | Primary color for active, colored icons |
+| Activity Bar | Monochrome | Subtle color accents for active project |
+
+### 15.6 Cursor-Style Editor Features (Reference: Cursor Screenshot)
+
+Based on Cursor's markdown editor, these advanced editing features are required:
+
+#### 15.6.1 Breadcrumb Path Bar
+
+**Location:** Below tab bar, above formatting toolbar
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│ docs > planning-artifacts > Ⓜ prd.md > ...                    [Preview] [Markdown] │
+└────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Features:**
+- Clickable path segments for navigation
+- Current file icon with indicator (Ⓜ for modified)
+- Breadcrumb truncation with `...` for deep paths
+- Preview/Markdown toggle on right side
+- Instant switching between rendered and raw markdown
+
+#### 15.6.2 Syntax Highlighting (Prettify)
+
+**YAML Frontmatter:**
+| Element | Color | Example |
+|---------|-------|---------|
+| Keys | Cyan (#9CDCFE) | `stepsCompleted:` |
+| String values | Orange (#CE9178) | `'step-01-init'` |
+| Number values | Green (#B5CEA8) | `0`, `1` |
+| Arrays | Yellow brackets | `[...]` |
+| Nested keys | Lighter cyan | `projectType:` under `classification:` |
+| Delimiters | Gray (#6A9955) | `---` |
+
+**Markdown Content:**
+| Element | Color | Example |
+|---------|-------|---------|
+| H1 Headers | Red/Coral (#D7BA7D) | `# Product Requirements` |
+| H2 Headers | Orange | `## 1. Executive Summary` |
+| H3 Headers | Lighter orange | `### 1.1 Product Overview` |
+| Bold markers | White | `**Author:**` |
+| Bold text | White | Content after `**` |
+| Links | Blue | `[[wikilinks]]` |
+| Code | Magenta | `` `inline code` `` |
+| Lists | Blue dash | `- list item` |
+
+#### 15.6.3 Indent Guide Lines
+
+**Visual vertical lines** showing indentation levels:
+
+```
+  │ projectType: web_app
+  │ domain: general_health_pkm
+  │ keyInsights:
+  │   │ - Cross-project linking
+  │   │ - Tiered RAG
+  │   │ - Intelligent RAG selection
+```
+
+**Implementation:**
+- Subtle dotted or solid vertical lines at each indent level
+- Lines stop at content, not full editor height
+- Color: Very subtle gray (#333 in dark mode)
+- Help track nesting in YAML, lists, and code blocks
+
+#### 15.6.4 Collapsible Headers (Code Folding)
+
+**Chevron indicators** next to headers:
+
+```
+  22  ▾ # Product Requirements Document — The Keep
+  23
+  31  ▾ ## 1. Executive Summary
+  32
+  33  ▸ ### 1.1 Product Overview        ← Collapsed
+  39  ▾ ### 1.2 Problem Statement
+```
+
+**Behavior:**
+- Click chevron (▸/▾) to expand/collapse
+- Collapsed sections show preview (first line or line count)
+- Keyboard: `Cmd+Shift+[` to fold, `Cmd+Shift+]` to unfold
+- Fold all: `Cmd+K Cmd+0`
+- Unfold all: `Cmd+K Cmd+J`
+- YAML frontmatter collapsible as single block
+- List items and code blocks also collapsible
+
+#### 15.6.5 Line Numbers
+
+Already specified in 15.2, but confirming:
+- **Default:** On
+- **Toggle:** Via settings or `Cmd+L` (tentative)
+- **Style:** Right-aligned, muted color (#5a5a5a)
+- **Active line:** Highlighted number
+
+### 15.7 TipTap WYSIWYG Mode (Preview Mode)
+
+When user toggles to **Preview** mode, TipTap provides full WYSIWYG editing capability (not just read-only rendering).
+
+#### 15.7.1 Mode Toggle Behavior
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ docs > planning-artifacts > prd.md                [Preview] [Source] │
+└────────────────────────────────────────────────────────────────────┘
+                                                     ▲         ▲
+                                                     │         │
+                                              TipTap WYSIWYG   │
+                                                         CodeMirror/Monaco
+```
+
+| Mode | Editor | Behavior |
+|------|--------|----------|
+| **Source** | CodeMirror/Monaco | Raw markdown with syntax highlighting |
+| **Preview** | TipTap | WYSIWYG editing with visual formatting |
+
+#### 15.7.2 TipTap Bubble Menu
+
+When text is selected in Preview mode, a floating menu appears:
+
+```
+                    ┌─────────────────────────────────┐
+                    │ B  I  S  </>  🔗  H1 H2 H3  💬 │
+                    └─────────────────────────────────┘
+                              ▲
+    "This is the selected text that the user wants to format"
+```
+
+| Button | Function | Keyboard |
+|--------|----------|----------|
+| **B** | Bold | Cmd+B |
+| **I** | Italic | Cmd+I |
+| **S** | Strikethrough | Cmd+Shift+S |
+| **</>** | Inline code | Cmd+E |
+| **🔗** | Create link | Cmd+K |
+| **H1/H2/H3** | Convert to heading | - |
+| **💬** | Block quote | - |
+
+#### 15.7.3 Slash Commands
+
+Type `/` anywhere to open command palette:
+
+```
+┌────────────────────────────────────────────┐
+│ /                                          │
+├────────────────────────────────────────────┤
+│ 📝  Paragraph     Start a new paragraph    │
+│ #   Heading 1     Large section heading    │
+│ ##  Heading 2     Medium section heading   │
+│ ### Heading 3     Small section heading    │
+│ •   Bullet List   Create bullet list       │
+│ 1.  Numbered List Create numbered list     │
+│ ☑   Task List     Create checkbox list     │
+│ </>  Code Block   Add code with syntax     │
+│ "   Quote         Add block quote          │
+│ ─   Divider       Horizontal rule          │
+│ ⊞   Table         Insert table             │
+│ 🖼  Image         Insert image             │
+│ [[  Wikilink      Link to another file     │
+└────────────────────────────────────────────┘
+```
+
+**Behavior:**
+- Type to filter commands
+- Arrow keys to navigate
+- Enter to select
+- Escape to close
+
+#### 15.7.4 Task List Interaction
+
+In Preview mode, task lists are interactive:
+
+```
+Before click:          After click:
+┌────────────────┐     ┌────────────────┐
+│ ☐ Buy groceries│  →  │ ☑ Buy groceries│
+│ ☐ Call mom     │     │ ☐ Call mom     │
+│ ☑ Exercise     │     │ ☑ Exercise     │
+└────────────────┘     └────────────────┘
+```
+
+- Click checkbox to toggle state
+- Changes sync to markdown: `- [ ]` ↔ `- [x]`
+- Drag to reorder tasks
+
+#### 15.7.5 Code Block with Language Selector
+
+```
+┌────────────────────────────────────────────────┐
+│ ┌──────────────┐                        [Copy] │
+│ │ typescript ▼ │                               │
+│ └──────────────┘                               │
+├────────────────────────────────────────────────┤
+│ function hello(name: string) {                 │
+│   console.log(`Hello, ${name}!`);              │
+│ }                                              │
+└────────────────────────────────────────────────┘
+```
+
+- Dropdown selects language for syntax highlighting
+- Copy button copies code content
+- Syntax highlighting via Lowlight/Shiki
+
+#### 15.7.6 Table Editing
+
+In Preview mode, tables have visual controls:
+
+```
+     [+]  ← Add column
+      ▼
+┌────┬────────┬──────────┬─────┐
+│ ID │ Name   │ Status   │ [+] │ ← Add column
+├────┼────────┼──────────┼─────┤
+│ 1  │ Task A │ Complete │     │
+├────┼────────┼──────────┼─────┤
+│ 2  │ Task B │ Pending  │     │
+├────┼────────┼──────────┼─────┤
+│[+] │        │          │     │ ← Add row
+└────┴────────┴──────────┴─────┘
+```
+
+- Click cell to edit
+- Drag column/row borders to resize
+- Right-click for context menu (delete row/column, merge cells)
+- Tab to move between cells
+
+### 15.8 Updated Editor Panel ASCII
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│ docs > planning-artifacts > Ⓜ prd.md > ...                    [Preview] [Markdown] │
+├────────────────────────────────────────────────────────────────────────────────────┤
+│ 📝 [B] [I] [</>] [🔗] │ [H1] [H2] │ [•] [1.] [☑] │ [⊞] [🖼] ["] │ [✎] [⫿] [👁]│ [💾] │
+├────────────────────────────────────────────────────────────────────────────────────┤
+│  1   │ ---                                                                          │
+│  2   │ │ stepsCompleted: ['step-01-init', 'step-02-discovery']                      │
+│  3   │ │ status: complete                                                            │
+│  4   │ ---                                                                          │
+│  5   │                                                                               │
+│  6 ▾ │ # Product Requirements Document — The Keep                                    │
+│  7   │                                                                               │
+│  8 ▾ │ ## 1. Executive Summary                                                       │
+│  9   │                                                                               │
+│ 10 ▸ │ ### 1.1 Product Overview  ··· (12 lines)                                      │
+│ 22 ▾ │ ### 1.2 Problem Statement                                                     │
+│ 23   │ │ - First problem point                                                       │
+│ 24   │ │ - Second problem point                                                      │
+└────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Legend:**
+- Line numbers on left
+- `│` = Indent guide lines
+- `▾` = Expanded header (clickable)
+- `▸` = Collapsed header (clickable)
+- `··· (12 lines)` = Collapsed content preview
+
+### 15.8 Document History Update
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2026-03-22 | Added mockup review enhancements from A+B+C comparison |
+| 1.2 | 2026-03-22 | Added Cursor-style editor features (breadcrumbs, prettify, indent guides, folding) |
+| 1.3 | 2026-03-22 | Added TipTap WYSIWYG mode (Section 15.7) - dual-editor architecture |
+| 1.4 | 2026-03-22 | PRD Party Mode Sync - Added Section 16 (AI Personas, Memory Grid, Cross-Project Inbox, Journal, Conversation Modes, Memory Versioning) |
+
+---
+
+## 16. PRD Party Mode Enhancements (2026-03-22)
+
+This section documents UX additions from the comprehensive PRD review session. These features enhance the AI interaction model and memory management system.
+
+### 16.1 AI Personas Selector
+
+**Purpose:** Allow users to toggle between 5 distinct AI interaction styles without changing the underlying model.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ AI Chat                                                    [×]  │
+├─────────────────────────────────────────────────────────────────┤
+│ Model: [jarvis-chat ▼]     Persona: [Coach ▼]                   │
+│  🏠 Local  ⚡ Fast           🎯 Supportive, encourages           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ [Chat content...]                                               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Persona Dropdown (Expanded):**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Persona: [Coach ▼]                                              │
+├─────────────────────────────────────────────────────────────────┤
+│ ○ Default          No personality modification                  │
+│ ● Coach         🎯 Supportive, encourages progress              │
+│ ○ Teacher       📚 Educational, explains concepts               │
+│ ○ Analyst       📊 Data-driven, precise                         │
+│ ○ Creative      🎨 Imaginative, explores options                │
+├─────────────────────────────────────────────────────────────────┤
+│ Each persona adjusts AI tone, not capabilities.                 │
+│ Preferences + Style Profile still apply.                        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Persona Persistence:**
+- Global default persona stored in user preferences
+- Per-project override in project settings
+- Shown as badge in chat header
+- Switches mid-conversation are allowed
+
+### 16.2 Memory Grid View (Spreadsheet Mode)
+
+**Purpose:** Provide a spreadsheet-like view for power users to manage memories at scale.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ AI Memories                                    [Grid ▼] [+ Add] [⚙️ Columns] │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ 🔍 Search memories...           Category: [All ▼]  Tier: [All ▼]            │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ │ Key          │ Value              │ Category │ Tier │ Status  │ Modified │ │
+│ ├──────────────┼────────────────────┼──────────┼──────┼─────────┼──────────│ │
+│ │ medication   │ metformin 500mg    │ health   │ HOT  │ active  │ 3/15     │ │
+│ │ a1c_goal     │ under 5.5          │ health   │ HOT  │ active  │ 3/10     │ │
+│ │ appointment  │ prefers morning    │ health   │ WARM │ active  │ 2/28     │ │
+│ │ old_allergy  │ penicillin         │ health   │ COLD │ archived│ 1/05     │ │
+│ │ ────────────────────────────────────────────────────────────────────────│ │
+│ │ [◀ Prev]    Showing 1-20 of 47 memories                     [Next ▶]    │ │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Column Configuration:**
+| Column | Always | Optional |
+|--------|--------|----------|
+| Key | ✓ | - |
+| Value | ✓ | - |
+| Category | ✓ | - |
+| Tier | - | ✓ |
+| Status | - | ✓ |
+| Source | - | ✓ |
+| Modified | - | ✓ |
+| Use Count | - | ✓ |
+| Versions | - | ✓ |
+
+**Grid Actions:**
+- Inline edit: Double-click any cell
+- Multi-select: Ctrl/Shift+click rows
+- Bulk tier change: Select multiple → right-click → "Set tier"
+- Bulk archive: Select multiple → right-click → "Archive"
+- Export: [⤓ Export CSV]
+- Sort: Click column header
+
+**View Toggle:**
+```
+[List ▼]
+├─ List      Traditional card view (default)
+└─ Grid      Spreadsheet view (power user)
+```
+
+### 16.3 Cross-Project Inbox
+
+**Purpose:** Handle requests from other projects to write/update memories in this project, with PR-style approval workflow.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🏠 HOA                                                              [⚙️]     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ 📁 Files                                                                     │
+│ 🧠 Knowledge                                                                 │
+│ 📥 Inbox (3) ◀ NEW                                                          │
+│    └─ 3 pending cross-project requests                                       │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ CROSS-PROJECT INBOX                                                          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ┌────────────────────────────────────────────────────────────────────────┐   │
+│ │ 📨 From: Health Project                              2 hours ago       │   │
+│ │ ──────────────────────────────────────────────────────────────────     │   │
+│ │ Request: Add memory                                                    │   │
+│ │                                                                        │   │
+│ │ Key: "hoa.contact_for_medical"                                         │   │
+│ │ Value: "Dr. Smith is emergency contact for medical issues"             │   │
+│ │ Tier: WARM                                                             │   │
+│ │                                                                        │   │
+│ │ Reason: Learned during health conversation - cross-project relevance   │   │
+│ │                                                                        │   │
+│ │ [✓ Approve] [✏️ Edit & Approve] [✗ Reject]                             │   │
+│ └────────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐   │
+│ │ 📨 From: Infrastructure Project                      Yesterday         │   │
+│ │ Request: Update memory                                                 │   │
+│ │ Key: "network.hoa_router"                                              │   │
+│ │ Old: "192.168.1.1"                                                     │   │
+│ │ New: "192.168.1.254" (router IP changed)                               │   │
+│ │                                                                        │   │
+│ │ [✓ Approve] [✏️ Edit & Approve] [✗ Reject]                             │   │
+│ └────────────────────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Inbox Badge Behavior:**
+- Badge shows unread count: `📥 Inbox (3)`
+- Appears in sidebar below Knowledge
+- Flashes on new request (CSS animation)
+- Cleared when all items resolved
+
+**Request States:**
+| State | Icon | Description |
+|-------|------|-------------|
+| Pending | 📨 | Awaiting user action |
+| Approved | ✓ | Memory written |
+| Rejected | ✗ | Request declined |
+| Expired | ⏰ | >30 days without action |
+
+### 16.4 Daily Journal / Timeline View
+
+**Purpose:** Centralized timeline of activities across ALL projects, aggregated into daily journal entries.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📅 Daily Journal                                        [Today ▼] [⚙️]       │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ ═══ March 22, 2026 (Today) ══════════════════════════════════════════════   │
+│                                                                              │
+│ 🏥 Health                                                                    │
+│ ├─ 09:15  💬 AI Chat: Discussed lab results interpretation                  │
+│ ├─ 09:30  🧠 Memory: Created "medication" = "metformin 500mg"               │
+│ ├─ 10:00  📝 Edited: labs/2024-03.md                                        │
+│ └─ 10:15  💬 AI Chat: Recipe recommendations based on diet                  │
+│                                                                              │
+│ 🏠 HOA                                                                       │
+│ ├─ 14:00  📄 Uploaded: meeting-minutes-march.pdf                            │
+│ └─ 14:30  💬 AI Chat: Summarized meeting action items                       │
+│                                                                              │
+│ ⚙️ Infrastructure                                                            │
+│ └─ 16:45  🧠 Memory: Updated "server.ip" = "10.0.0.33"                      │
+│                                                                              │
+│ ═══ March 21, 2026 (Yesterday) ══════════════════════════════════════════   │
+│                                                                              │
+│ 🏥 Health                                                                    │
+│ └─ 11:00  📕 Viewed: prescription-history.pdf                               │
+│                                                                              │
+│ [Load more...]                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Event Types:**
+| Icon | Event Type | Description |
+|------|------------|-------------|
+| 💬 | AI Chat | Conversation started/completed |
+| 🧠 | Memory | Created, updated, or deleted |
+| 📝 | Edit | File edited |
+| 📄 | Upload | File uploaded |
+| 📕 | View | File viewed (PDF, image) |
+| 🔍 | Search | Search performed |
+| ⚙️ | Settings | Configuration changed |
+
+**Filtering:**
+```
+[Filter: All ▼]
+├─ All activities
+├─ AI Conversations only
+├─ Memory changes only
+├─ File activity only
+└─ By project: [Select projects...]
+```
+
+**Calendar Navigation:**
+```
+┌─────────────────────────────┐
+│ March 2026       [◀] [▶]   │
+├─────────────────────────────┤
+│ Su Mo Tu We Th Fr Sa       │
+│                    1       │
+│  2  3  4  5  6  7  8       │
+│  9 10 11 12 13 14 15       │
+│ 16 17 18 19 20 21 ●22      │ ← Today (●)
+│ 23 24 25 26 27 28 29       │
+│ 30 31                      │
+└─────────────────────────────┘
+  ● = Has activity (dot indicator)
+```
+
+### 16.5 Conversation Mode Indicator
+
+**Purpose:** Show current conversation mode (Normal vs Incognito) with clear visual distinction.
+
+**Normal Mode (Default):**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ AI Chat                                    [🟢 Normal Mode] [×]  │
+├─────────────────────────────────────────────────────────────────┤
+│ Model: [jarvis-chat ▼]                                          │
+│                                                                 │
+│ Context includes: memories, preferences, history                │
+│ Memories: Can be learned                                        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Incognito Mode:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ AI Chat                              [🟣 Incognito Mode 🔒] [×]  │ ← Purple border
+├─────────────────────────────────────────────────────────────────┤
+│ Model: [jarvis-chat ▼]                                          │
+│                                                                 │
+│ ⚠️ Incognito: No memories accessed or created                   │
+│    Conversation will NOT be saved to history                    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Visual Differences:**
+| Aspect | Normal Mode | Incognito Mode |
+|--------|-------------|----------------|
+| Badge | 🟢 Normal Mode | 🟣 Incognito Mode 🔒 |
+| Border | None | 2px purple border |
+| Background | Standard dark | Subtle purple tint |
+| Memory access | Full | None |
+| History | Saved | Not saved |
+
+**Mode Toggle:**
+- Keyboard shortcut: `Cmd+Shift+I`
+- Chat menu: Right-click → "Toggle Incognito"
+- Command palette: "Toggle Incognito Mode"
+
+### 16.6 Memory Version History
+
+**Purpose:** Track all changes to a memory with full version history and revert capability.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Memory: medication                                           [🔙 Back] [×]   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ Current Value: metformin 500mg twice daily                                   │
+│ Category: health    Tier: HOT    Status: active                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ VERSION HISTORY (4 versions)                                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ v4 (current)                                         March 22, 2026      │ │
+│ │ Value: metformin 500mg twice daily                                       │ │
+│ │ Changed by: AI (Chat)   Reason: Dosage updated after doctor visit        │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ v3                                                   March 15, 2026      │ │
+│ │ Value: metformin 500mg once daily                                        │ │
+│ │ Changed by: User (Manual edit)                                           │ │
+│ │                                                        [↩️ Revert to v3] │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ v2                                                   February 28, 2026   │ │
+│ │ Value: metformin 250mg once daily                                        │ │
+│ │ Changed by: AI (Chat)   Reason: Initial medication noted                 │ │
+│ │                                                        [↩️ Revert to v2] │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ v1 (original)                                        February 20, 2026   │ │
+│ │ Value: on diabetes medication                                            │ │
+│ │ Changed by: AI (Chat)   Reason: First mention in conversation            │ │
+│ │                                                        [↩️ Revert to v1] │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Version Entry Fields:**
+| Field | Description |
+|-------|-------------|
+| Version | Sequential number (v1, v2, v3...) |
+| Date | When change occurred |
+| Value | The value at this version |
+| Changed by | "AI (Chat)", "User (Manual edit)", "User (Inline edit)" |
+| Reason | Optional: Why the change was made |
+| Revert button | Present on all versions except current |
+
+**Revert Confirmation:**
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ Revert to Version 2?                                             │
+├──────────────────────────────────────────────────────────────────┤
+│ Current: metformin 500mg twice daily                             │
+│      ↓                                                           │
+│ Will become: metformin 250mg once daily                          │
+│                                                                  │
+│ This will create a new version (v5) with the old value.          │
+│ The current version will remain in history.                      │
+│                                                                  │
+│ [Cancel]                                      [Revert to v2]     │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### 16.7 4-Layer AI Customization Hierarchy
+
+**Purpose:** Show users how AI behavior is composed from multiple layers.
+
+**Settings → AI Behavior Panel:**
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ AI BEHAVIOR CUSTOMIZATION                                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Your AI experience is built from 4 layers (priority order):                  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ Layer 1: GLOBAL PREFERENCES (Always Applied)                             │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ Language: English                                      [Edit]            │ │
+│ │ Response length: Concise                               [Edit]            │ │
+│ │ Code style: Prefer examples over explanations          [Edit]            │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                           ↓ (applied first)                                  │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ Layer 2: PERSONA (Conversation Tone)                                     │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ Active: Coach 🎯                                       [Change]          │ │
+│ │ Behavior: Supportive, encourages progress                                │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                           ↓ (overlays persona)                               │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ Layer 3: STYLE PROFILE (Project-Specific)                                │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ For: Health project                                                      │ │
+│ │ Style: Be extra careful with medical advice disclaimers  [Edit]         │ │
+│ │        Use metric units for measurements                 [Edit]          │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                           ↓ (most specific)                                  │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ Layer 4: AI-LEARNED GUIDE (Auto-Updated)                                 │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ From conversations: "User prefers tables over paragraphs"                │ │
+│ │                     "Likes direct answers, then explanation"             │ │
+│ │                                                          [View All]      │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ [Preview Combined Behavior]                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 16.8 Memory Tier Visual Indicators
+
+**Purpose:** Make memory tiers visually distinct throughout the UI.
+
+**Tier Badge Styles:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ HOT      🔥   Red background (#ff4444)    Always in context     │
+│ WARM     ☀️   Orange background (#ff9944) Vector-retrieved     │
+│ COLD     ❄️   Blue background (#4488ff)   Archive only         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**In Memory List:**
+```
+┌────────────────────────────────────────────────────────────────┐
+│ 🔥 medication      metformin 500mg twice daily                 │
+│ 🔥 a1c_goal        under 5.5                                   │
+│ ☀️ appointment     prefers morning appointments                │
+│ ❄️ old_allergy     penicillin (archived 1/5)                   │
+└────────────────────────────────────────────────────────────────┘
+```
+
+**Tier Change Dropdown:**
+```
+┌─────────────────────────────────────────┐
+│ Change Tier:                            │
+├─────────────────────────────────────────┤
+│ ● 🔥 HOT    Always injected             │
+│ ○ ☀️ WARM   Retrieved when relevant     │
+│ ○ ❄️ COLD   Archive (never injected)    │
+├─────────────────────────────────────────┤
+│ Tip: HOT memories count against         │
+│ context budget. Use sparingly.          │
+└─────────────────────────────────────────┘
+```
+
+---
+
+**Document Status:** Updated - PRD Party Mode Sync Complete
 
 **Linked Documents:**
 - Product Brief: `docs/planning-artifacts/product-brief.md`
 - PRD: `docs/planning-artifacts/prd.md`
 - Spike Findings: `docs/spikes/001-affine-dify-evaluation/FINDINGS.md`
+- **Research:**
+  - `docs/research/cursor-vscode-analysis.md`
+  - `docs/research/obsidian-analysis.md`
+  - `docs/research/obsidian-plugin-deep-dive.md`

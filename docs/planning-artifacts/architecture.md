@@ -11,9 +11,10 @@ completedAt: '2026-03-22'
 
 # Architecture Decision Document - The Keep
 
-**Version:** 1.0
+**Version:** 1.1
 **Date:** 2026-03-22
 **Status:** Complete
+**Last Updated:** 2026-03-22 (synced with PRD Party Mode Review)
 
 ---
 
@@ -25,7 +26,7 @@ The Keep is a web-based personal knowledge management IDE built with Next.js 14+
 
 | Aspect | Decision |
 |--------|----------|
-| **Frontend** | Next.js 14+ App Router, dockview panels, Monaco Editor |
+| **Frontend** | Next.js 14+ App Router, dockview panels, Monaco + TipTap editors |
 | **State** | Zustand with persistence middleware |
 | **Backend** | Next.js API Routes + Server Actions |
 | **Database** | PostgreSQL with pgvector for RAG |
@@ -47,11 +48,18 @@ The Keep is a web-based personal knowledge management IDE built with Next.js 14+
 | Project Management (FR-PM) | 6 | Medium |
 | File Management (FR-FM) | 7 | Medium |
 | Document Viewing (FR-DV) | 6 | Medium |
-| Markdown Editing (FR-ME) | 7 | Medium |
+| Markdown Editing (FR-ME) | 17 | High - dual editor (Monaco + TipTap) |
 | AI Chat (FR-AC) | 10 | High - LLM routing |
-| Personal Knowledge (FR-PK) | 9 | High - memory system |
+| AI File Editing (FR-FE) | 10 | Critical - core differentiator |
+| Personal Knowledge (FR-PK) | 15 | High - memory system with versioning |
+| Memory Provenance (FR-MP) | 12 | High - source tracking |
+| Conversation Modes (FR-CM) | 41 | High - personas, journal, cross-project |
 | Knowledge Graph/RAG (FR-KG) | 5 | High - pgvector |
-| Embedded Views (FR-EV) | 3 | Low |
+| Project Context (FR-PC) | 8 | Medium - .keep/ system |
+| Soul Discovery (FR-SD) | 7 | Medium - onboarding |
+| Data Safety (FR-DS) | 6 | Medium - soft delete, recovery |
+| Security (FR-SEC) | 5 | High - secret masking |
+| **Total** | **165** | - |
 
 **Non-Functional Requirements:**
 
@@ -67,9 +75,9 @@ The Keep is a web-based personal knowledge management IDE built with Next.js 14+
 
 - **Project Complexity:** High
 - **Primary Domain:** Full-stack web application
-- **Estimated Components:** 45-50 React components
-- **Database Tables:** 8-10 core tables
-- **API Endpoints:** 20-25 routes
+- **Estimated Components:** 60-70 React components
+- **Database Tables:** 15-18 core tables (see Section 6)
+- **API Endpoints:** 30-40 routes
 
 ### Technical Constraints
 
@@ -217,12 +225,41 @@ The Keep is a web-based personal knowledge management IDE built with Next.js 14+
 
 ### 4.3 Editor & Viewers
 
+**Dual-Editor Architecture:**
+
+The Keep uses two editors for markdown files, toggled via Source/Preview mode:
+
+| Mode | Editor | Purpose |
+|------|--------|---------|
+| **Source** | Monaco Editor | Raw markdown with syntax highlighting |
+| **Preview** | TipTap | WYSIWYG editing with formatting toolbar |
+
+Both editors sync to the same markdown content via shared state.
+
 | Component | Library | Version |
 |-----------|---------|---------|
-| Code/Markdown Editor | Monaco Editor | 0.47+ |
-| Markdown Preview | react-markdown + remark-gfm | 9.0+ |
+| Source Mode Editor | Monaco Editor | 0.47+ |
+| Preview Mode Editor | TipTap | 2.2+ |
+| TipTap Markdown | @tiptap/extension-markdown | 2.2+ |
+| TipTap Task Lists | @tiptap/extension-task-list | 2.2+ |
+| TipTap Code Blocks | @tiptap/extension-code-block-lowlight | 2.2+ |
+| Syntax Highlighting | lowlight | 3.0+ |
 | PDF Viewer | react-pdf | 7.7+ |
 | Image Viewer | Custom (native img + zoom) | - |
+
+**TipTap Extensions Required:**
+```
+@tiptap/react
+@tiptap/starter-kit
+@tiptap/extension-markdown
+@tiptap/extension-task-list
+@tiptap/extension-task-item
+@tiptap/extension-code-block-lowlight
+@tiptap/extension-link
+@tiptap/extension-table
+@tiptap/extension-placeholder
+lowlight (for syntax highlighting)
+```
 
 ### 4.4 State Management
 
@@ -388,22 +425,60 @@ File Upload → Text Extraction → Chunking → Embedding → pgvector Storage
 - PostgreSQL JSON columns provide flexibility + query power
 - Atomic memories enable granular CRUD without rewriting blobs
 
-**Memory Schema:**
+**Memory Schema (Updated with Lifecycle):**
 
 ```typescript
 interface Memory {
   id: string;
   projectId: string;
-  category: 'preference' | 'fact' | 'inventory' | 'profile';
+  category: string;      // 'health', 'food', 'equipment', etc.
+  subject: string;       // 'me', 'mom', 'house', etc.
   key: string;           // e.g., "weight", "likes_spicy_food"
-  value: string;         // e.g., "180", "true"
+  value: string;         // e.g., "180 lbs", "true"
+  unit?: string;         // Optional unit for values
+
+  // Status & Lifecycle
+  status: 'active' | 'archived' | 'trash';
+  tier: 'hot' | 'warm' | 'cold';  // Only when status='active'
+  score: number;         // Aggregated relevance (1-10)
+  lastUsed?: Date;       // Last AI reference
+  useCount: number;      // Times used in context
+
+  // Provenance
   confidence: number;    // 0-1, for AI-extracted memories
-  source: 'manual' | 'extracted' | 'imported';
-  sourceConversationId?: string;
+  sourceType: 'user_stated' | 'ai_inferred' | 'file_extracted' | 'imported';
+  sourceRef?: string;    // file:line or conversation:message
+
+  // Timestamps
   createdAt: Date;
   updatedAt: Date;
+  archivedAt?: Date;     // When archived (NULL = not archived)
+  trashedAt?: Date;      // When trashed (30-day purge)
+}
+
+interface MemoryVersion {
+  id: string;
+  memoryId: string;
+  versionNumber: number;
+  value: string;
+  unit?: string;
+  status: 'active' | 'archived' | 'trash';
+  tier: 'hot' | 'warm' | 'cold';
+  changedBy: 'user' | 'ai' | 'system';
+  changeType: 'create' | 'edit' | 'status_change' | 'tier_change' | 'restore';
+  changeSummary?: string;
+  previousValue?: string;
+  createdAt: Date;
 }
 ```
+
+**Memory Tier Architecture:**
+
+| Tier | Context Injection | Criteria |
+|------|-------------------|----------|
+| **Hot** | Always in system prompt | Score ≥8, useCount >10, used in 7 days |
+| **Warm** | Vector-retrieved when relevant | Score 6-7, useCount 3-10, used in 30 days |
+| **Cold** | Searchable archive, rarely loaded | Score 4-5, useCount <3, 30+ days stale |
 
 ### 4.10 Authentication
 
@@ -586,17 +661,82 @@ export const knowledgeItems = pgTable('knowledge_items', {
 export const memories = pgTable('memories', {
   id: uuid('id').primaryKey().defaultRandom(),
   projectId: uuid('project_id').references(() => projects.id),
-  category: varchar('category', { length: 50 }).notNull(),
+  category: varchar('category', { length: 100 }).notNull(),
+  subject: varchar('subject', { length: 100 }).default('me'),
   key: varchar('key', { length: 255 }).notNull(),
   value: text('value').notNull(),
+  unit: varchar('unit', { length: 50 }),
+
+  // Status & Lifecycle
+  status: varchar('status', { length: 20 }).default('active'), // 'active' | 'archived' | 'trash'
+  tier: varchar('tier', { length: 20 }).default('warm'),       // 'hot' | 'warm' | 'cold'
+  score: real('score').default(5.0),
+  lastUsed: timestamp('last_used'),
+  useCount: integer('use_count').default(0),
+
+  // Provenance
   confidence: real('confidence').default(1.0),
-  source: varchar('source', { length: 20 }).notNull(), // 'manual' | 'extracted' | 'imported'
-  sourceConversationId: uuid('source_conversation_id'),
+  sourceType: varchar('source_type', { length: 30 }).notNull(), // 'user_stated' | 'ai_inferred' | 'file_extracted' | 'imported'
+  sourceRef: text('source_ref'),
+
+  // Timestamps
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  archivedAt: timestamp('archived_at'),
+  trashedAt: timestamp('trashed_at'),
 }, (table) => ({
   projectKeyIdx: uniqueIndex('project_key_idx').on(table.projectId, table.key),
+  statusIdx: index('status_idx').on(table.status),
+  tierIdx: index('tier_idx').on(table.tier),
 }));
+
+// Memory version history for revert capability
+export const memoryVersions = pgTable('memory_versions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  memoryId: uuid('memory_id').references(() => memories.id),
+  versionNumber: integer('version_number').notNull(),
+  value: text('value').notNull(),
+  unit: varchar('unit', { length: 50 }),
+  status: varchar('status', { length: 20 }).notNull(),
+  tier: varchar('tier', { length: 20 }).notNull(),
+  changedBy: varchar('changed_by', { length: 20 }).notNull(), // 'user' | 'ai' | 'system'
+  changeType: varchar('change_type', { length: 30 }).notNull(), // 'create' | 'edit' | 'status_change' | 'tier_change' | 'restore'
+  changeSummary: text('change_summary'),
+  previousValue: text('previous_value'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Cross-project update requests (inbox model)
+export const crossProjectRequests = pgTable('cross_project_requests', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sourceProjectId: uuid('source_project_id').references(() => projects.id),
+  sourceProjectName: varchar('source_project_name', { length: 255 }),
+  sourceConversationId: uuid('source_conversation_id'),
+  targetProjectId: uuid('target_project_id').references(() => projects.id),
+  requestType: varchar('request_type', { length: 30 }).notNull(), // 'memory_update' | 'memory_create' | 'memory_delete' | 'file_update'
+  subject: text('subject').notNull(),
+  context: text('context'),
+  proposedChange: jsonb('proposed_change'),
+  status: varchar('status', { length: 20 }).default('pending'), // 'pending' | 'approved' | 'denied' | 'expired'
+  reviewedAt: timestamp('reviewed_at'),
+  reviewNote: text('review_note'),
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at'),
+});
+
+// Daily journal entries (central, cross-project)
+export const journalEntries = pgTable('journal_entries', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  date: date('date').notNull(),
+  summary: text('summary'),
+  highlights: jsonb('highlights'),       // Key items extracted
+  projectActivity: jsonb('project_activity'), // { projectId: summary }
+  tasksExtracted: jsonb('tasks_extracted'),
+  tasksCompleted: jsonb('tasks_completed'),
+  source: varchar('source', { length: 50 }), // 'the-keep' | 'claude-code' | 'n8n' | 'api'
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
 
 // db/schema/embeddings.ts
 export const fileEmbeddings = pgTable('file_embeddings', {
@@ -943,10 +1083,13 @@ the-keep/
 │   │   │   │   ├── file-tree-item.tsx
 │   │   │   │   └── file-context-menu.tsx
 │   │   │   ├── editor/
-│   │   │   │   ├── editor-panel.tsx
-│   │   │   │   ├── monaco-editor.tsx
-│   │   │   │   ├── markdown-preview.tsx
-│   │   │   │   └── editor-toolbar.tsx
+│   │   │   │   ├── editor-panel.tsx        # Container with mode toggle
+│   │   │   │   ├── monaco-editor.tsx       # Source mode (raw markdown)
+│   │   │   │   ├── tiptap-editor.tsx       # Preview mode (WYSIWYG)
+│   │   │   │   ├── tiptap-bubble-menu.tsx  # Floating format menu
+│   │   │   │   ├── tiptap-slash-menu.tsx   # Slash command palette
+│   │   │   │   ├── editor-toolbar.tsx      # Formatting toolbar
+│   │   │   │   └── use-editor-sync.ts      # Markdown ↔ editor sync hook
 │   │   │   ├── pdf-viewer/
 │   │   │   │   ├── pdf-panel.tsx
 │   │   │   │   └── pdf-controls.tsx
@@ -1073,7 +1216,199 @@ the-keep/
 
 ---
 
-## 9. Infrastructure & Deployment
+## 9. AI Context Injection Architecture
+
+### 4-Layer AI Customization
+
+The AI behavior is controlled through a layered customization system:
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                    AI CONTEXT ASSEMBLY                          │
+├────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Layer 1: Global Preferences (user-wide)                       │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Communication style, expertise level, feedback prefs    │   │
+│  │ Stored in: ~/.keep/preferences.json                     │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          ↓                                      │
+│  Layer 2: AI Persona (per-conversation)                        │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Default | Coach | Teacher | Analyst | Creative          │   │
+│  │ Selected in: Chat header dropdown                       │   │
+│  │ Default from: .keep/SOUL.md#default_persona             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          ↓                                      │
+│  Layer 3: Content Style Profile (per-content-type)             │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Formal/casual, length, structure per document type      │   │
+│  │ Stored in: .keep/styles/{content-type}.yaml             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          ↓                                      │
+│  Layer 4: AI-Learned Style Guide (per-project)                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Patterns learned from imported docs (MVP+4)             │   │
+│  │ Stored in: .keep/STYLE_GUIDE.md                         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### AI Persona Definitions
+
+| Persona | System Prompt Traits | Use Case |
+|---------|---------------------|----------|
+| **Default** | Neutral, helpful, professional | General use |
+| **Coach** | Encouraging, celebrates wins, gentle accountability | Health tracking, habits |
+| **Teacher** | Explanatory, patient, uses analogies | Learning, research |
+| **Analyst** | Data-focused, pattern recognition, metrics | Analysis, optimization |
+| **Creative** | Exploratory, suggests alternatives, playful | Brainstorming, writing |
+
+```typescript
+// lib/ai/personas.ts
+interface Persona {
+  id: string;
+  name: string;
+  systemPromptAdditions: string;
+  responseGuidelines: string[];
+}
+
+const PERSONAS: Record<string, Persona> = {
+  default: {
+    id: 'default',
+    name: 'Default',
+    systemPromptAdditions: '',
+    responseGuidelines: []
+  },
+  coach: {
+    id: 'coach',
+    name: 'Coach',
+    systemPromptAdditions: `You are an encouraging coach. Celebrate wins, provide gentle accountability,
+ask about feelings, use phrases like "Great job!", "Keep going!", "How are you feeling about this?"`,
+    responseGuidelines: ['celebrate_progress', 'ask_feelings', 'gentle_nudges']
+  },
+  // ... other personas
+};
+```
+
+### Context Injection Pipeline
+
+On EVERY AI request, the system assembles context in this order:
+
+```typescript
+// lib/ai/context-builder.ts
+async function buildAIContext(request: AIRequest): Promise<SystemPrompt> {
+  const context: ContextLayers = {
+    // 1. Project context (.keep/ files)
+    soul: await loadFile('.keep/SOUL.md'),
+    guardrails: await loadFile('.keep/GUARDRAILS.md'),
+    instructions: await loadFile('.keep/INSTRUCTIONS.md'),
+    userProfile: await loadFile('.keep/USER.md'),
+
+    // 2. Memory injection
+    hotMemories: await getMemories({ tier: 'hot', status: 'active' }),
+    warmMemories: request.enableRAG
+      ? await vectorSearch(request.query, { tier: 'warm' })
+      : [],
+
+    // 3. Open files context
+    openFiles: request.contextFiles.map(f => ({
+      path: f.path,
+      content: f.content.slice(0, MAX_FILE_CONTEXT)
+    })),
+
+    // 4. Persona
+    persona: PERSONAS[request.personaId] ?? PERSONAS.default,
+
+    // 5. Style (if content-type detected)
+    styleProfile: await loadStyleProfile(request.contentType),
+
+    // 6. Conversation mode constraints
+    mode: request.conversationMode // 'normal' | 'incognito' | 'readonly'
+  };
+
+  return assembleSystemPrompt(context);
+}
+```
+
+### Cross-Project Query Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  CROSS-PROJECT QUERY FLOW                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  User in Project: Health                                        │
+│  Query: "What foods should I avoid given my allergies?"         │
+│                                                                 │
+│  1. READ Phase (allowed across linked projects)                 │
+│  ┌────────────┐    ┌────────────┐    ┌────────────┐            │
+│  │  Health    │    │   Food     │    │  Fitness   │            │
+│  │ (primary)  │◀───│ (linked)   │◀───│ (linked)   │            │
+│  └────────────┘    └────────────┘    └────────────┘            │
+│       │                 │                 │                     │
+│       ▼                 ▼                 ▼                     │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Combined Context with Project Citations                  │   │
+│  │ "From Health: allergies = shellfish, peanuts"            │   │
+│  │ "From Food: recipe_preferences = Mediterranean"          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  2. WRITE Phase (only to primary project OR via inbox)          │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Memory created → writes to Health (current project)      │   │
+│  │ OR                                                        │   │
+│  │ Cross-project update → creates request in Food inbox     │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Daily Journal Architecture
+
+```typescript
+// lib/journal/aggregator.ts
+interface JournalEntry {
+  date: string;           // YYYY-MM-DD
+  summary: string;        // AI-generated summary
+  highlights: string[];   // Key items extracted
+  projectActivity: {
+    [projectId: string]: {
+      projectName: string;
+      conversations: number;
+      memoryChanges: number;
+      filesEdited: string[];
+      summary: string;
+    }
+  };
+  tasksExtracted: Task[];
+  tasksCompleted: Task[];
+  source: 'the-keep' | 'api' | 'webhook';
+}
+
+// Cron job: End of day journal generation
+// POST /api/journal/generate
+async function generateDailyJournal(date: string): Promise<JournalEntry> {
+  const activity = await collectDayActivity(date);
+  const summary = await aiSummarize(activity);
+  const tasks = await extractTasks(activity.conversations);
+
+  return saveJournalEntry({
+    date,
+    summary,
+    highlights: activity.highlights,
+    projectActivity: activity.byProject,
+    tasksExtracted: tasks.extracted,
+    tasksCompleted: tasks.completed,
+    source: 'the-keep'
+  });
+}
+```
+
+---
+
+## 10. Infrastructure & Deployment
 
 ### Docker Configuration
 
@@ -1173,11 +1508,17 @@ ENABLE_MEMORY_EXTRACTION=true
 | FR-PM (Projects) | ✅ 100% | Schema + API designed |
 | FR-FM (Files) | ✅ 100% | S3 + API routes planned |
 | FR-DV (Viewing) | ✅ 100% | Panel components defined |
-| FR-ME (Editing) | ✅ 100% | Monaco + toolbar planned |
+| FR-ME (Editing) | ✅ 100% | Monaco + TipTap dual-editor |
 | FR-AC (AI Chat) | ✅ 100% | LLM routing designed |
-| FR-PK (Knowledge) | ✅ 100% | Atomic memory system |
+| FR-FE (AI Editing) | ✅ 100% | Diff preview, hooks system |
+| FR-PK (Knowledge) | ✅ 100% | Atomic memory with versioning |
+| FR-MP (Provenance) | ✅ 100% | Source tracking in schema |
+| FR-CM (Conv Modes) | ✅ 100% | Personas, journal, cross-project |
 | FR-KG (RAG) | ✅ 100% | pgvector pipeline |
-| FR-EV (Embedded) | ✅ 100% | iframe component |
+| FR-PC (Context) | ✅ 100% | .keep/ structure defined |
+| FR-SD (Onboarding) | ✅ 100% | Soul Discovery flow |
+| FR-DS (Safety) | ✅ 100% | Soft delete, recovery |
+| FR-SEC (Security) | ✅ 100% | Secret masking |
 | NFR-* | ✅ 100% | Performance, security addressed |
 
 ### Implementation Readiness
@@ -1276,7 +1617,14 @@ ENABLE_MEMORY_EXTRACTION=true
 
 **Document Status:** Complete
 
+**Changelog:**
+
+| Date | Version | Changes |
+|------|---------|---------|
+| 2026-03-22 | 1.1 | Synced with PRD Party Mode Review: Updated FR counts (165 total), added MemoryVersion & CrossProjectRequest schemas, added Section 9 (AI Context Injection with 4-layer customization, personas, cross-project queries, daily journal), updated memory schema with lifecycle fields (status, tier, score), added journalEntries table |
+| 2026-03-22 | 1.0 | Initial architecture document |
+
 **Next Steps:**
-1. UX Design - Wireframes and interaction patterns
+1. ~~UX Design - Wireframes and interaction patterns~~ (Complete, needs PRD sync)
 2. Epic/Story creation based on implementation phases
 3. Sprint planning for Phase 1

@@ -729,6 +729,39 @@ workflows/
 
 ---
 
+## Additional Directories (from Config Patterns Research)
+
+Based on research of Claude Code, VS Code, and Cursor configuration patterns, these additional directories are recommended:
+
+```
+.keep/
+├── rules/                  # Behavioral rules (auto-loaded, like .claude/rules/)
+│   ├── security.md         # Security-related rules
+│   ├── formatting.md       # Output formatting rules
+│   └── {domain}.md         # Domain-specific rules
+│
+├── hooks/                  # Lifecycle automation (26+ events in Claude Code)
+│   ├── pre-edit.sh         # Before file edit
+│   ├── post-save.sh        # After file save
+│   ├── session-start.sh    # On conversation start
+│   └── {event}.sh          # Custom event hooks
+│
+├── context/                # Session persistence
+│   ├── current-session.json
+│   └── recent-files.json
+│
+└── integrations/           # External service configs
+    ├── dify.yaml           # Dify workflow connection
+    ├── grist.yaml          # Grist database connection
+    └── {service}.yaml      # Other integrations
+```
+
+**Rules Auto-Loading:** Like Claude Code's `.claude/rules/` directory, markdown files in `rules/` are automatically loaded as behavioral instructions for the AI. This allows domain-specific or file-type-specific rules.
+
+**Hooks:** Inspired by Claude Code's 26+ lifecycle events. Hooks can run shell scripts at various points (pre-edit, post-save, session-start, etc.) for automation.
+
+---
+
 ## Open Questions
 
 1. **Dify sync direction:** Which is source of truth for procedures?
@@ -736,6 +769,7 @@ workflows/
 3. **Versioning:** Track changes to context files? Git-like history?
 4. **Templates:** Ship with project-type templates (Health, Finance, Learning)?
 5. **Migration:** How to import from other systems (Obsidian, Notion)?
+6. **Rule scoping:** Should rules support glob-based scoping like Cursor? (e.g., apply only to *.md files)
 
 ---
 
@@ -745,6 +779,7 @@ workflows/
 - [PRD](prd.md) - Detailed requirements (in progress)
 - [Roadmap](roadmap.md) - Release timeline
 - [Architecture](architecture.md) - Technical implementation (pending update)
+- [Config Patterns Research](../research/config-patterns-analysis.md) - Claude/VSCode/Cursor patterns
 
 ---
 
@@ -752,4 +787,5 @@ workflows/
 
 | Date | Change |
 |------|--------|
+| 2026-03-22 | Added rules/, hooks/, context/, integrations/ directories based on config patterns research |
 | 2026-03-22 | Initial specification created during PRD Journey Mapping |

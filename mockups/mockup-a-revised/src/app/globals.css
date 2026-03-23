@@ -1,0 +1,306 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* VS Code Dark+ inspired theme */
+  --background: #1e1e1e;
+  --foreground: #d4d4d4;
+  --card: #252526;
+  --card-foreground: #d4d4d4;
+  --popover: #252526;
+  --popover-foreground: #d4d4d4;
+  --primary: #0e639c;
+  --primary-foreground: #ffffff;
+  --secondary: #3c3c3c;
+  --secondary-foreground: #d4d4d4;
+  --muted: #2d2d2d;
+  --muted-foreground: #808080;
+  --accent: #094771;
+  --accent-foreground: #ffffff;
+  --destructive: #f14c4c;
+  --destructive-foreground: #ffffff;
+  --border: #3c3c3c;
+  --input: #3c3c3c;
+  --ring: #007acc;
+
+  /* IDE-specific colors */
+  --activity-bar: #333333;
+  --activity-bar-foreground: #858585;
+  --sidebar: #252526;
+  --sidebar-foreground: #cccccc;
+  --editor-bg: #1e1e1e;
+  --tab-active: #1e1e1e;
+  --tab-inactive: #2d2d2d;
+  --status-bar: #007acc;
+  --header-bar: #323233;
+
+  /* File type colors */
+  --file-md: #519aba;
+  --file-pdf: #e44d26;
+  --file-image: #8dc149;
+  --file-code: #cbcb41;
+  --file-folder: #dcb67a;
+
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Cascadia Code", "Fira Code", Consolas, "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Dockview styling */
+.dockview-theme-dark {
+  --dv-activegroup-visiblepanel-tab-background-color: var(--tab-active);
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--tab-inactive);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--tab-inactive);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--tab-inactive);
+  --dv-tab-divider-color: var(--border);
+  --dv-activegroup-visiblepanel-tab-color: #ffffff;
+  --dv-activegroup-hiddenpanel-tab-color: #969696;
+  --dv-inactivegroup-visiblepanel-tab-color: #969696;
+  --dv-inactivegroup-hiddenpanel-tab-color: #969696;
+  --dv-separator-border: var(--border);
+  --dv-paneview-header-border-color: var(--border);
+  --dv-tabs-and-actions-container-background-color: var(--tab-inactive);
+  --dv-tabs-container-scrollbar-color: #424242;
+  --dv-group-view-background-color: var(--editor-bg);
+  --dv-tabs-and-actions-container-font-size: 13px;
+  --dv-drag-over-background-color: rgba(83, 89, 93, 0.5);
+  --dv-drag-over-border-color: #007acc;
+}
+
+.dockview-theme-dark .tab {
+  padding: 0 10px;
+}
+
+.dockview-theme-dark .tab-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+}
+
+/* Selection colors */
+::selection {
+  background-color: #264f78;
+  color: #ffffff;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 1px solid var(--ring);
+  outline-offset: -1px;
+}
+
+/* Command palette animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.15s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.15s ease-out;
+}
+
+/* Tree view styles */
+.tree-item {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+  padding-left: var(--indent, 8px);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-item:hover {
+  background-color: rgba(90, 93, 94, 0.31);
+}
+
+.tree-item.selected {
+  background-color: #094771;
+}
+
+.tree-item-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.tree-item-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Line numbers in editor */
+.editor-line-numbers {
+  min-width: 3rem;
+  padding-right: 1rem;
+  text-align: right;
+  color: var(--muted-foreground);
+  user-select: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.editor-content {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Frontmatter styling */
+.frontmatter {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.frontmatter-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 12px;
+}
+
+.frontmatter-field:last-child {
+  margin-bottom: 0;
+}
+
+.frontmatter-key {
+  color: var(--muted-foreground);
+  min-width: 5rem;
+}
+
+.frontmatter-value {
+  color: var(--foreground);
+}
+
+.frontmatter-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  background: var(--secondary);
+  border-radius: 9999px;
+  font-size: 11px;
+  margin-right: 0.25rem;
+}
+
+/* Syntax highlighting colors */
+.token-heading {
+  color: #569cd6;
+  font-weight: bold;
+}
+
+.token-bold {
+  color: #ce9178;
+  font-weight: bold;
+}
+
+.token-italic {
+  color: #dcdcaa;
+  font-style: italic;
+}
+
+.token-link {
+  color: #4ec9b0;
+  text-decoration: underline;
+}
+
+.token-code {
+  color: #ce9178;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.125rem 0.25rem;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+}
+
+.token-list {
+  color: #6796e6;
+}
+
+.token-table-pipe {
+  color: #808080;
+}
+
+/* Tab hover menu styles */
+.tab-hover-menu {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.tab-hover-menu.visible,
+.tab:hover .tab-hover-menu {
+  opacity: 1;
+}

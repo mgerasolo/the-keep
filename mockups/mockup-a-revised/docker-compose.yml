@@ -1,0 +1,10 @@
+services:
+  the-keep-mockup:
+    build: .
+    container_name: the-keep-mockup
+    ports:
+      - "5016:3000"
+    restart: unless-stopped
+    labels:
+      - "project=the-keep"
+      - "component=mockup"
