@@ -109,4 +109,5 @@ networks:
   default:
     name: the-keep-network
   traefik-public:
-    external: true
+    name: traefik-public
+    external: false
