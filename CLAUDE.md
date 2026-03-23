@@ -8,7 +8,7 @@ Application description here.
 
 **Target Environment:** Banner (10.0.0.33)
 **Port Block:** 5010-5019 (web=5010)
-**Domain:** the-keep.nextlevelguild.com
+**Domain:** keep.nextlevelfoundry.com
 
 ## Critical Rules
 
@@ -24,8 +24,8 @@ Application description here.
 - **Acceptable:** VM IP with port (e.g., `http://10.0.0.33:5010`)
 
 ```bash
-# BEST - domain via Traefik
-https://the-keep.nextlevelguild.com
+# BEST - domain via Traefik (routes through Helicarrier)
+https://keep.nextlevelfoundry.com
 
 # OK - direct IP to container host
 http://10.0.0.33:5010
@@ -36,9 +36,12 @@ http://127.0.0.1:3352
 ```
 
 **Domain/Traefik Setup:**
-- Traefik config: `~/Infrastructure/stacks/traefik/`
+- **Traefik runs on Helicarrier (10.0.0.27)** - NOT on Banner or deployment targets
+- **DNS via AdGuard** - Primary DNS resolver
+- Routing flow: `AdGuard DNS → Helicarrier Traefik → Banner:5010`
+- To add routes: Request via Infrastructure handoff (docker labels don't work with remote Traefik)
+- Config reference: `~/Infrastructure/stacks/traefik/`
 - Domain registry: `~/Infrastructure/DEPLOYMENTS.md`
-- Standards: `/mnt/foundry_resources/standards-shared/`
 
 **SSH Access:**
 - **ALWAYS use hostname, NEVER use IP address**

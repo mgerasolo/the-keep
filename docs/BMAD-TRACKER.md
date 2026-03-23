@@ -56,9 +56,9 @@ Fix: High ✓ Med ✓ Low (optional)
 ## Current Status
 
 **Phase:** ✅ Setup Complete (Steps 1-6) - Ready for Story Loop
-**Next:** Step 7 - Create Story (`/bmad-create-story`)
-**Epic:** -
-**Story:** -
+**Next:** Step 8 - Dev Story (`/bmad-dev-story`)
+**Epic:** 0 - Infrastructure & Developer Foundation
+**Story:** 0.1 - Infrastructure Stack Deployment (ready-for-dev)
 
 ---
 

@@ -1,20 +1,27 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { getCurrentUser } from '@/lib/auth';
+import { UserProvider } from '@/lib/auth/context';
 
 export const metadata: Metadata = {
   title: 'The Keep - Personal Knowledge Management',
   description: 'AI-powered personal knowledge management system with transparent memory and file editing',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch current user on server
+  const user = await getCurrentUser();
+
   return (
     <html lang="en" className="dark">
       <body className="antialiased">
-        {children}
+        <UserProvider user={user}>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

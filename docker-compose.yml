@@ -88,17 +88,10 @@ services:
         condition: service_started
     profiles:
       - production
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.the-keep.rule=Host(`keep.nextlevelfoundry.com`)"
-      - "traefik.http.routers.the-keep.entrypoints=websecure"
-      - "traefik.http.routers.the-keep.tls=true"
-      - "traefik.http.routers.the-keep.tls.certresolver=letsencrypt"
-      - "traefik.http.services.the-keep.loadbalancer.server.port=3000"
-      - "traefik.docker.network=traefik-public"
-    networks:
-      - default
-      - traefik-public
+    # NOTE: Domain routing (keep.nextlevelfoundry.com) is configured on
+    # Helicarrier's Traefik, NOT via docker labels. Docker labels only work
+    # when Traefik is on the same host. Request routing via Infrastructure handoff.
+    # Direct access: http://10.0.0.33:5010
 
 volumes:
   postgres_data:
@@ -108,6 +101,3 @@ volumes:
 networks:
   default:
     name: the-keep-network
-  traefik-public:
-    name: traefik-public
-    external: false

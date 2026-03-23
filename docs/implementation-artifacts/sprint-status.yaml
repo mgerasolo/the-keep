@@ -44,9 +44,9 @@ story_location: docs/implementation-artifacts/stories
 development_status:
   # Epic 0: Infrastructure & Developer Foundation
   epic-0: in-progress
-  0-1-infrastructure-stack-deployment: review
-  0-2-database-schema-and-migrations: ready-for-dev
-  0-3-auth-ready-architecture: backlog
+  0-1-infrastructure-stack-deployment: done
+  0-2-database-schema-and-migrations: done
+  0-3-auth-ready-architecture: in-progress
   0-4-api-layer-and-data-fetching: backlog
   0-5-toast-and-error-handling-framework: backlog
   0-6-logging-and-observability: backlog

@@ -1,6 +1,6 @@
 # Story 0.2: Database Schema & Migrations
 
-**Status:** ready-for-dev
+**Status:** in-progress
 
 ---
 

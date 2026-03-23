@@ -101,7 +101,7 @@
   - [x] Clone repository or copy files
   - [x] Run `docker compose up -d --build`
   - [x] Verify all containers are healthy
-  - [ ] Test domain access via Traefik (BLOCKED: Traefik not configured on Banner)
+  - [ ] Test domain access via Traefik (BLOCKED: Awaiting Traefik route on Helicarrier)
 
 - [x] **Task 7: Validate Deployment** (AC: 1, 2, 3, 4)
   - [ ] Verify `https://keep.nextlevelfoundry.com` loads (BLOCKED: Traefik not configured)
@@ -319,7 +319,7 @@ Claude Opus 4.5 (claude-opus-4-5-20251101)
 5. **Test Coverage** - Unit tests (4 passing) and E2E tests (3 passing)
 
 **BLOCKER for AC-2:**
-Traefik is not configured on Banner. Domain routing requested via handoff **HO-2** to Infrastructure.
+Awaiting Traefik route configuration on Helicarrier. Domain routing requested via handoff **HO-2** to Infrastructure.
 - Domain: `keep.nextlevelfoundry.com`
 - App accessible via `http://10.0.0.33:5010` in the meantime
 - Traefik labels already configured in docker-compose.yml

@@ -12,14 +12,23 @@ afterEach(() => {
   cleanup();
 });
 
-// Mock environment variables for testing
+// Mock environment variables for testing (only if not already set)
+// Integration tests set real env vars; don't override them
 beforeAll(() => {
-  vi.stubEnv('DATABASE_URL', 'postgresql://test:test@localhost:5432/test');
-  vi.stubEnv('REDIS_URL', 'redis://localhost:6379');
-  vi.stubEnv('MINIO_ENDPOINT', 'localhost');
-  vi.stubEnv('MINIO_ACCESS_KEY', 'test');
-  vi.stubEnv('MINIO_SECRET_KEY', 'test');
-  vi.stubEnv('LITELLM_URL', 'http://localhost:4000');
+  if (!process.env.DATABASE_URL) {
+    vi.stubEnv('DATABASE_URL', 'postgresql://test:test@localhost:5432/test');
+  }
+  if (!process.env.REDIS_URL) {
+    vi.stubEnv('REDIS_URL', 'redis://localhost:6379');
+  }
+  if (!process.env.MINIO_ENDPOINT) {
+    vi.stubEnv('MINIO_ENDPOINT', 'localhost');
+    vi.stubEnv('MINIO_ACCESS_KEY', 'test');
+    vi.stubEnv('MINIO_SECRET_KEY', 'test');
+  }
+  if (!process.env.LITELLM_URL) {
+    vi.stubEnv('LITELLM_URL', 'http://localhost:4000');
+  }
 });
 
 // Mock Next.js router

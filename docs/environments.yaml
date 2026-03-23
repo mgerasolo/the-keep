@@ -1,0 +1,92 @@
+# The Keep - Environment Configuration Reference
+# This file documents server addresses and service endpoints
+# DO NOT store actual secrets here - use .env.local for credentials
+
+project:
+  name: the-keep
+  port_block: 5010-5019
+  domain: keep.nextlevelfoundry.com
+
+# Deployment targets
+servers:
+  development:
+    name: Banner
+    ip: 10.0.0.33
+    ssh: banner  # Use hostname, not IP
+
+  production:
+    name: Hulk
+    ip: 10.0.0.32
+    ssh: hulk
+
+  never_deploy:
+    - stark   # Coding workstation only
+    - friday  # Infrastructure automation only
+
+# Service ports on Banner (development)
+services:
+  app:
+    internal_port: 3000
+    external_port: 5010
+    url_direct: http://10.0.0.33:5010
+    url_domain: https://keep.nextlevelfoundry.com  # pending Traefik setup
+
+  database:
+    type: PostgreSQL 16 + pgvector
+    container: the-keep-db
+    internal_port: 5432
+    external_port: 5017  # Note: 5011-5016 used by prototype spikes
+    host_internal: db  # Docker network name
+    host_external: 10.0.0.33
+    database: thekeep
+    user: thekeep
+    # Password in: docker exec the-keep-db env | grep POSTGRES_PASSWORD
+
+  redis:
+    container: the-keep-redis
+    internal_port: 6379
+    external_port: 5018
+    host_internal: redis
+    host_external: 10.0.0.33
+
+  minio:
+    container: the-keep-minio
+    api_port: 9000
+    console_port: 9001
+    host_internal: minio
+    host_external: 10.0.0.33
+    bucket: the-keep
+
+# Shared infrastructure services
+infrastructure:
+  litellm:
+    url: http://10.0.0.27:2764
+    description: AI model proxy
+
+  traefik:
+    host: Helicarrier (10.0.0.27)
+    note: Traefik runs centrally on Helicarrier - NOT on deployment targets
+    config_location: /opt/traefik/config/  # On Helicarrier
+    routing_flow: AdGuard DNS -> Helicarrier Traefik -> Banner:5010
+    status: pending route configuration on Helicarrier
+
+  adguard:
+    host: Helicarrier (10.0.0.27)
+    note: Primary DNS resolver for all domains
+
+  secrets:
+    location: /mnt/foundry_devlab/secrets/env/
+    project_file: the-keep.env  # To be created
+
+# Connection string templates
+# Replace ${PASSWORD} with actual value from secrets
+connection_strings:
+  database_internal: postgresql://thekeep:${DB_PASSWORD}@db:5432/thekeep
+  database_external: postgresql://thekeep:${DB_PASSWORD}@10.0.0.33:5017/thekeep
+  redis_internal: redis://redis:6379
+  redis_external: redis://10.0.0.33:5018
+
+# Commands to retrieve credentials
+credentials:
+  db_password: ssh banner "docker exec the-keep-db env | grep POSTGRES_PASSWORD"
+  minio_creds: ssh banner "docker exec the-keep-minio env | grep MINIO"
