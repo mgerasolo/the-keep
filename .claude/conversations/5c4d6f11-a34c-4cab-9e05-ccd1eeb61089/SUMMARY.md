@@ -96,3 +96,74 @@ restore context from this file and related context files.
 After compaction, the post-compaction hook will automatically
 restore context from this file and related context files.
 
+
+---
+
+## Pre-Compaction Checkpoint
+
+**Timestamp:** 2026-03-23 13:20:36
+**Reason:** Approaching token limit (70% usage, 10% buffer before 80% auto-compact)
+**Action:** Auto-save triggered before compaction
+
+**State at checkpoint:**
+- Working directory: /home/mgerasolo/Dev/the-keep
+- Last modified files:
+  - ./src/components/workspace/index.ts
+  - ./src/components/workspace/ActivityBar.tsx
+  - ./src/components/workspace/WorkspaceLayout.tsx
+  - ./src/components/projects/index.ts
+  - ./src/components/projects/ProjectFormModal.tsx
+  - ./src/components/ui/button.tsx
+  - ./src/components/ui/input.tsx
+  - ./src/components/ui/modal.tsx
+  - ./src/stores/projectStore.ts
+  - ./src/stores/index.ts
+
+**Recovery instructions:**
+After compaction, the post-compaction hook will automatically
+restore context from this file and related context files.
+
+
+---
+
+## Pre-Compaction Checkpoint
+
+**Timestamp:** 2026-03-23 13:50:11
+**Reason:** Approaching token limit (70% usage, 10% buffer before 80% auto-compact)
+**Action:** Auto-save triggered before compaction
+
+**State at checkpoint:**
+- Working directory: /home/mgerasolo/Dev/the-keep
+- Last modified files:
+  - ./src/components/workspace/FileContextMenu.tsx
+  - ./src/components/workspace/FileTree.tsx
+  - ./src/components/workspace/index.ts
+  - ./src/components/workspace/FileUploadDialog.tsx
+  - ./src/components/workspace/WorkspaceLayout.tsx
+  - ./src/components/workspace/panels/FileBrowserPanel.tsx
+  - ./src/components/workspace/panels/EditorPanel.tsx
+  - ./src/components/projects/ProjectFormModal.tsx
+  - ./src/components/editor/TipTapEditor.tsx
+  - ./src/components/editor/MarkdownEditor.tsx
+
+**Recovery instructions:**
+After compaction, the post-compaction hook will automatically
+restore context from this file and related context files.
+
+
+---
+
+## Pre-Compaction Checkpoint
+
+**Timestamp:** 2026-03-23 16:34:51
+**Reason:** Approaching token limit (70% usage, 10% buffer before 80% auto-compact)
+**Action:** Auto-save triggered before compaction
+
+**State at checkpoint:**
+- Working directory: /home/mgerasolo/Dev/the-keep
+- Last modified files:
+
+**Recovery instructions:**
+After compaction, the post-compaction hook will automatically
+restore context from this file and related context files.
+

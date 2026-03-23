@@ -19,7 +19,7 @@ export interface Session {
 
 /**
  * Get the current user from session
- * MVP: Always returns seeded user
+ * MVP: Falls back to seeded user if no session cookie
  * Future: Returns user based on Authentik session
  */
 export async function getCurrentUser(): Promise<User | null> {
@@ -27,20 +27,22 @@ export async function getCurrentUser(): Promise<User | null> {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('session');
 
-    if (!sessionCookie?.value) {
-      return null;
+    let userId = SEEDED_USER_ID;
+
+    if (sessionCookie?.value) {
+      // Parse session to get userId
+      const session: Session = JSON.parse(sessionCookie.value);
+      userId = session.userId;
     }
 
-    // Parse session to get userId
-    const session: Session = JSON.parse(sessionCookie.value);
-
-    // MVP: Query user from database
-    const [user] = await db.select().from(users).where(eq(users.id, session.userId)).limit(1);
+    // MVP: Query user from database (default to seeded user if no cookie)
+    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
     return user ?? null;
   } catch (error) {
     console.error('Error getting current user:', error);
-    return null;
+    // MVP fallback: return seeded user even on error
+    return getSeededUser();
   }
 }
 

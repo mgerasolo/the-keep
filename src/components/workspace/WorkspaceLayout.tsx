@@ -6,7 +6,7 @@
  */
 
 import { DockviewReact, DockviewReadyEvent, IDockviewPanelProps } from 'dockview-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import 'dockview-react/dist/styles/dockview.css';
 import { ActivityBar } from './ActivityBar';
 import { WelcomePanel } from './panels/WelcomePanel';
@@ -47,7 +47,7 @@ function PanelComponent(props: IDockviewPanelProps) {
 export function WorkspaceLayout() {
   const apiRef = useRef<DockviewReadyEvent['api'] | null>(null);
   const { activeProjectId, setActiveProject } = useProjectStore();
-  const [showProjectModal, setShowProjectModal] = useState(false);
+  const { showProjectModal, setShowProjectModal, showUploadDialog, setShowUploadDialog } = useWorkspaceStore();
   const [editingProject, setEditingProject] = useState<{
     id: string;
     name: string;
@@ -124,6 +124,14 @@ export function WorkspaceLayout() {
   }, []);
 
   const { setDockviewApi } = useWorkspaceStore();
+
+  // Handle upload dialog - for now just show a toast
+  useEffect(() => {
+    if (showUploadDialog) {
+      toast.info('Upload dialog - select a project first, then use the file browser context menu');
+      setShowUploadDialog(false);
+    }
+  }, [showUploadDialog, setShowUploadDialog]);
 
   const onReady = useCallback((event: DockviewReadyEvent) => {
     apiRef.current = event.api;

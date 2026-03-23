@@ -6,18 +6,15 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Health Check', () => {
-  test('homepage loads successfully', async ({ page }) => {
+  test('workspace loads successfully', async ({ page }) => {
     // Navigate to homepage
     await page.goto('/');
 
     // Verify the page title
     await expect(page).toHaveTitle(/The Keep/);
 
-    // Verify the main heading
-    await expect(page.getByRole('heading', { name: 'The Keep' })).toBeVisible();
-
-    // Verify the health check link exists
-    await expect(page.getByRole('link', { name: 'Health Check' })).toBeVisible();
+    // Verify the workspace layout renders (activity bar)
+    await expect(page.locator('[data-testid="activity-bar"]')).toBeVisible({ timeout: 15000 });
   });
 
   test('health endpoint returns valid response', async ({ request }) => {

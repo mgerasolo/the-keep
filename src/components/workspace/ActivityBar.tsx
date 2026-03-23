@@ -32,7 +32,7 @@ export function ActivityBar({
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col h-full w-12 bg-background-secondary border-r border-border">
+    <div data-testid="activity-bar" className="flex flex-col h-full w-12 bg-background-secondary border-r border-border">
       {/* Project icons - top section */}
       <div className="flex-1 overflow-y-auto py-2 space-y-1">
         {projects.map((project) => (
@@ -45,6 +45,7 @@ export function ActivityBar({
             onMouseEnter={() => setHoveredId(project.id)}
             onMouseLeave={() => setHoveredId(null)}
             onClick={() => onProjectSelect(project.id)}
+            testId={`project-${project.id}`}
           />
         ))}
 
@@ -58,6 +59,7 @@ export function ActivityBar({
           onMouseLeave={() => setHoveredId(null)}
           onClick={onNewProject}
           className="opacity-60 hover:opacity-100"
+          testId="new-project-action"
         />
       </div>
 
@@ -74,6 +76,7 @@ export function ActivityBar({
           onMouseEnter={() => setHoveredId('ai')}
           onMouseLeave={() => setHoveredId(null)}
           onClick={() => onGlobalAction('ai')}
+          testId="ai-action"
         />
         <ActivityBarItem
           icon="🔍"
@@ -83,6 +86,7 @@ export function ActivityBar({
           onMouseEnter={() => setHoveredId('search')}
           onMouseLeave={() => setHoveredId(null)}
           onClick={() => onGlobalAction('search')}
+          testId="search-action"
         />
         <ActivityBarItem
           icon="🧠"
@@ -92,6 +96,7 @@ export function ActivityBar({
           onMouseEnter={() => setHoveredId('knowledge')}
           onMouseLeave={() => setHoveredId(null)}
           onClick={() => onGlobalAction('knowledge')}
+          testId="knowledge-action"
         />
         <ActivityBarItem
           icon="⚙️"
@@ -101,6 +106,7 @@ export function ActivityBar({
           onMouseEnter={() => setHoveredId('settings')}
           onMouseLeave={() => setHoveredId(null)}
           onClick={() => onGlobalAction('settings')}
+          testId="settings-action"
         />
       </div>
     </div>
@@ -116,6 +122,7 @@ interface ActivityBarItemProps {
   onMouseLeave: () => void;
   onClick: () => void;
   className?: string;
+  testId?: string;
 }
 
 function ActivityBarItem({
@@ -127,6 +134,7 @@ function ActivityBarItem({
   onMouseLeave,
   onClick,
   className,
+  testId,
 }: ActivityBarItemProps) {
   return (
     <div className="relative px-1">
@@ -134,6 +142,7 @@ function ActivityBarItem({
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        data-testid={testId}
         className={cn(
           'w-10 h-10 flex items-center justify-center rounded-lg text-xl transition-colors',
           isActive

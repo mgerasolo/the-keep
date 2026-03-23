@@ -5,6 +5,7 @@
 
 import { router, publicProcedure, createCallerFactory } from '../trpc';
 import { projectsRouter } from './projects';
+import { filesRouter } from './files';
 
 /**
  * Main app router
@@ -18,6 +19,7 @@ export const appRouter = router({
 
   // Feature routers
   projects: projectsRouter,
+  files: filesRouter,
 });
 
 /**
