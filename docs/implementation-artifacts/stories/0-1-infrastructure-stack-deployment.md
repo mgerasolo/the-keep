@@ -1,6 +1,6 @@
 # Story 0.1: Infrastructure Stack Deployment
 
-**Status:** ready-for-dev
+**Status:** blocked
 
 ---
 
@@ -57,57 +57,57 @@
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Initialize Next.js 15 Project** (AC: 1)
-  - [ ] Create Next.js 15 project with App Router (`npx create-next-app@latest`)
-  - [ ] Configure TypeScript strict mode in `tsconfig.json`
-  - [ ] Install core dependencies: `tailwindcss`, `@shadcn/ui`, `zustand`
-  - [ ] Set up Tailwind CSS configuration
-  - [ ] Create basic `src/app/page.tsx` placeholder
+- [x] **Task 1: Initialize Next.js 15 Project** (AC: 1)
+  - [x] Create Next.js 15 project with App Router (`npx create-next-app@latest`)
+  - [x] Configure TypeScript strict mode in `tsconfig.json`
+  - [x] Install core dependencies: `tailwindcss`, `@shadcn/ui`, `zustand`
+  - [x] Set up Tailwind CSS configuration
+  - [x] Create basic `src/app/page.tsx` placeholder
 
-- [ ] **Task 2: Create Docker Compose Stack** (AC: 1, 4)
-  - [ ] Create `Dockerfile` for Next.js production build
-  - [ ] Create `docker-compose.yml` with services:
+- [x] **Task 2: Create Docker Compose Stack** (AC: 1, 4)
+  - [x] Create `Dockerfile` for Next.js production build
+  - [x] Create `docker-compose.yml` with services:
     - `app` (Next.js on port 5010:3000)
-    - `db` (pgvector/pgvector:pg16 on port 5011:5432)
-    - `redis` (redis:7 on port 5012:6379)
-  - [ ] Configure named volume for PostgreSQL data
-  - [ ] Add healthcheck commands for each service
-  - [ ] Add Traefik labels for domain routing
+    - `db` (pgvector/pgvector:pg16 on port 5017:5432)
+    - `redis` (redis:7 on port 5018:6379)
+  - [x] Configure named volume for PostgreSQL data
+  - [x] Add healthcheck commands for each service
+  - [x] Add Traefik labels for domain routing
 
-- [ ] **Task 3: Configure Environment Variables** (AC: 1, 4)
-  - [ ] Create `.env.example` with all required variables
-  - [ ] Create `.env.local` from secrets at `/mnt/foundry_devlab/secrets/env/`
-  - [ ] Configure variables:
+- [x] **Task 3: Configure Environment Variables** (AC: 1, 4)
+  - [x] Create `.env.example` with all required variables
+  - [x] Create `.env.local` from secrets at `/mnt/foundry_devlab/secrets/env/`
+  - [x] Configure variables:
     - `DATABASE_URL` (PostgreSQL connection)
     - `REDIS_URL` (Redis connection)
     - `MINIO_ENDPOINT`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
     - `LITELLM_URL`, `LITELLM_API_KEY`
-  - [ ] Add `.env.local` to `.gitignore`
+  - [x] Add `.env.local` to `.gitignore`
 
-- [ ] **Task 4: Create Health Check Endpoint** (AC: 3)
-  - [ ] Create `/api/health/route.ts` API route
-  - [ ] Implement PostgreSQL connection check
-  - [ ] Implement Redis connection check
-  - [ ] Implement MinIO connection check
-  - [ ] Return JSON response with all service statuses
+- [x] **Task 4: Create Health Check Endpoint** (AC: 3)
+  - [x] Create `/api/health/route.ts` API route
+  - [x] Implement PostgreSQL connection check
+  - [x] Implement Redis connection check
+  - [x] Implement MinIO connection check
+  - [x] Return JSON response with all service statuses
 
-- [ ] **Task 5: Configure MinIO Bucket** (AC: 1, 4)
-  - [ ] Connect to MinIO on Helicarrier
-  - [ ] Create `the-keep` bucket if not exists
-  - [ ] Verify bucket permissions
+- [x] **Task 5: Configure MinIO Bucket** (AC: 1, 4)
+  - [x] Connect to MinIO on Helicarrier
+  - [x] Create `the-keep` bucket if not exists
+  - [x] Verify bucket permissions
 
-- [ ] **Task 6: Deploy to Banner** (AC: 2)
-  - [ ] SSH to Banner (`ssh banner`)
-  - [ ] Clone repository or copy files
-  - [ ] Run `docker compose up -d --build`
-  - [ ] Verify all containers are healthy
-  - [ ] Test domain access via Traefik
+- [x] **Task 6: Deploy to Banner** (AC: 2)
+  - [x] SSH to Banner (`ssh banner`)
+  - [x] Clone repository or copy files
+  - [x] Run `docker compose up -d --build`
+  - [x] Verify all containers are healthy
+  - [ ] Test domain access via Traefik (BLOCKED: Traefik not configured on Banner)
 
-- [ ] **Task 7: Validate Deployment** (AC: 1, 2, 3, 4)
-  - [ ] Verify `https://the-keep.nextlevelguild.com` loads
-  - [ ] Verify `/api/health` returns all services OK
-  - [ ] Verify pgvector extension: `SELECT * FROM pg_extension WHERE extname = 'vector';`
-  - [ ] Document any issues in Dev Notes
+- [x] **Task 7: Validate Deployment** (AC: 1, 2, 3, 4)
+  - [ ] Verify `https://the-keep.nextlevelguild.com` loads (BLOCKED: Traefik not configured)
+  - [x] Verify `/api/health` returns all services OK
+  - [x] Verify pgvector extension: `SELECT * FROM pg_extension WHERE extname = 'vector';`
+  - [x] Document any issues in Dev Notes
 
 ---
 
@@ -285,12 +285,12 @@ export async function GET() {
 
 ## Definition of Done
 
-- [ ] All services running (`docker compose ps` shows healthy)
-- [ ] Domain accessible: `https://the-keep.nextlevelguild.com`
-- [ ] Health endpoint returns all services OK
-- [ ] pgvector extension verified in PostgreSQL
-- [ ] No hardcoded secrets in code
-- [ ] `.env.example` documents all required variables
+- [x] All services running (`docker compose ps` shows healthy)
+- [ ] Domain accessible: `https://the-keep.nextlevelguild.com` (BLOCKED: Traefik not configured)
+- [x] Health endpoint returns all services OK
+- [x] pgvector extension verified in PostgreSQL
+- [x] No hardcoded secrets in code
+- [x] `.env.example` documents all required variables
 
 ---
 
@@ -298,12 +298,70 @@ export async function GET() {
 
 ### Agent Model Used
 
-_To be filled by dev agent_
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Completion Notes
 
-_To be filled after implementation_
+**Implementation completed on 2026-03-22/23:**
+
+1. **Next.js 15 Project** - Created with App Router, TypeScript strict mode, Tailwind CSS, TDD testing framework (Vitest + Playwright)
+
+2. **Docker Compose Stack** - All services running on Banner:
+   - `the-keep-app`: port 5010 (healthy)
+   - `the-keep-db`: port 5017 (pgvector/pgvector:pg16, healthy)
+   - `the-keep-redis`: port 5018 (redis:7, healthy)
+   - `the-keep-minio`: ports 9000-9001 (healthy)
+
+3. **Health Check Endpoint** - `/api/health` returns all services OK with response time <500ms
+
+4. **pgvector Extension** - Enabled and verified (v0.8.2)
+
+5. **Test Coverage** - Unit tests (4 passing) and E2E tests (3 passing)
+
+**BLOCKER for AC-2:**
+Traefik is not configured on Banner. The domain `the-keep.nextlevelguild.com` is not routable. App is accessible via `http://10.0.0.33:5010`. Traefik labels have been added to docker-compose.yml for when Traefik is set up.
+
+**Port Deviation:**
+Story spec: db=5011, redis=5012
+Actual: db=5017, redis=5018
+Reason: Ports 5011-5016 are used by prototype spikes (Dify, Affine, LobeChat) still running on Banner.
 
 ### Files Created/Modified
 
-_To be filled after implementation_
+**Created:**
+- `package.json` - Next.js 15 with testing framework
+- `tsconfig.json` - TypeScript strict mode config
+- `next.config.mjs` - Next.js config with standalone output
+- `tailwind.config.ts` - Tailwind CSS configuration
+- `postcss.config.mjs` - PostCSS config
+- `vitest.config.ts` - Vitest unit test config
+- `playwright.config.ts` - Playwright E2E config
+- `Dockerfile` - Multi-stage production build
+- `docker-compose.yml` - All services with healthchecks + Traefik labels
+- `.dockerignore` - Docker build exclusions
+- `.env.example` - Environment variables template
+- `public/.gitkeep` - Placeholder for public assets
+- `src/app/page.tsx` - Homepage placeholder
+- `src/app/layout.tsx` - Root layout with metadata
+- `src/app/globals.css` - Global styles
+- `src/app/api/health/route.ts` - Health check endpoint
+- `src/lib/db.ts` - PostgreSQL client with connection check
+- `src/lib/redis.ts` - Redis client with connection check
+- `src/lib/minio.ts` - MinIO client with bucket management
+- `src/lib/utils.ts` - Shared utilities
+- `tests/setup.ts` - Test setup
+- `tests/utils/api.ts` - API test utilities
+- `tests/unit/api/health.test.ts` - Health endpoint unit tests
+- `tests/e2e/health.spec.ts` - Health endpoint E2E tests
+- `docs/implementation-artifacts/stories/0-1-infrastructure-stack-deployment.md` - This story file
+
+**Modified:**
+- `docs/BMAD-TIMELINE.md` - Added test framework step (6.5)
+
+### Change Log
+
+- 2026-03-22: Initial project setup with Next.js 15 and testing framework
+- 2026-03-22: Created Docker Compose stack and health check endpoint
+- 2026-03-22: Deployed to Banner, all services healthy
+- 2026-03-23: Added Traefik labels, fixed port mappings (5017/5018)
+- 2026-03-23: Enabled pgvector extension, verified all ACs except domain routing
