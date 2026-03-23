@@ -9,6 +9,9 @@ import { NextResponse } from 'next/server';
 import { checkDbConnection } from '@/lib/db';
 import { checkRedisConnection } from '@/lib/redis';
 import { checkMinioConnection } from '@/lib/minio';
+import { createLogger } from '@/lib/logger';
+
+const logger = createLogger({ component: 'health' });
 
 export interface HealthStatus {
   status: 'ok' | 'degraded' | 'error';
@@ -62,7 +65,7 @@ export async function GET(): Promise<NextResponse<HealthStatus>> {
 
   // Log health check (for observability)
   const duration = Date.now() - startTime;
-  console.log(`Health check completed in ${duration}ms:`, response);
+  logger.info({ duration, status, services }, 'Health check completed');
 
   return NextResponse.json(response, { status: statusCode });
 }

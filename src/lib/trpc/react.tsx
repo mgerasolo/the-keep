@@ -11,6 +11,7 @@ import { createTRPCReact } from '@trpc/react-query';
 import { useState, type ReactNode } from 'react';
 import superjson from 'superjson';
 import type { AppRouter } from '@/server/routers';
+import { toast } from '@/components/ui/toaster';
 
 /**
  * tRPC React hooks
@@ -25,6 +26,34 @@ function getBaseUrl() {
     return `https://${process.env.VERCEL_URL}`;
   }
   return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+
+/**
+ * Extract user-friendly error message from tRPC error
+ */
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    // Parse tRPC error structure
+    if ('message' in error) {
+      // tRPC errors have a message property
+      const message = error.message;
+      // Don't show technical error codes to users
+      if (message.includes('UNAUTHORIZED')) {
+        return 'You need to be logged in to do that';
+      }
+      if (message.includes('NOT_FOUND')) {
+        return 'The requested item could not be found';
+      }
+      if (message.includes('FORBIDDEN')) {
+        return "You don't have permission to do that";
+      }
+      if (message.includes('BAD_REQUEST')) {
+        return 'Invalid request. Please check your input.';
+      }
+      return message;
+    }
+  }
+  return 'An unexpected error occurred';
 }
 
 /**
@@ -46,6 +75,10 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
           mutations: {
             // Retry once on failure
             retry: 1,
+            // Auto-show error toast on mutation failure
+            onError: (error) => {
+              toast.error(getErrorMessage(error));
+            },
           },
         },
       })

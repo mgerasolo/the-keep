@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { getCurrentUser } from '@/lib/auth';
 import { Providers } from './providers';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'The Keep - Personal Knowledge Management',
@@ -20,6 +21,7 @@ export default async function RootLayout({
     <html lang="en" className="dark">
       <body className="antialiased">
         <Providers user={user}>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );

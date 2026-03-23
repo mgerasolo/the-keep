@@ -1,5 +1,8 @@
 import { getCurrentUser } from '@/lib/auth';
 
+// Force dynamic rendering since we read cookies
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const user = await getCurrentUser();
 

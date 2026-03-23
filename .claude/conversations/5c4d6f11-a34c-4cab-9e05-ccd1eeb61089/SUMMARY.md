@@ -69,3 +69,30 @@ restore context from this file and related context files.
 After compaction, the post-compaction hook will automatically
 restore context from this file and related context files.
 
+
+---
+
+## Pre-Compaction Checkpoint
+
+**Timestamp:** 2026-03-23 00:57:01
+**Reason:** Approaching token limit (70% usage, 10% buffer before 80% auto-compact)
+**Action:** Auto-save triggered before compaction
+
+**State at checkpoint:**
+- Working directory: /home/mgerasolo/Dev/the-keep
+- Last modified files:
+  - ./src/components/ui/toaster.tsx
+  - ./src/components/ui/error-boundary.tsx
+  - ./src/server/routers/projects.ts
+  - ./src/server/routers/index.ts
+  - ./src/server/trpc.ts
+  - ./src/app/page.tsx
+  - ./src/app/providers.tsx
+  - ./src/app/api/trpc/[trpc]/route.ts
+  - ./src/app/layout.tsx
+  - ./src/middleware.ts
+
+**Recovery instructions:**
+After compaction, the post-compaction hook will automatically
+restore context from this file and related context files.
+

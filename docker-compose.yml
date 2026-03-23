@@ -67,6 +67,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
       DATABASE_URL: postgresql://thekeep:${DB_PASSWORD:-thekeep_dev}@db:5432/thekeep
       REDIS_URL: redis://redis:6379
       MINIO_ENDPOINT: minio
@@ -88,6 +89,17 @@ services:
         condition: service_started
     profiles:
       - production
+    # Logging configuration for Loki collection via Promtail
+    labels:
+      - "logging=loki"
+      - "app=the-keep"
+      - "environment=production"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "app,environment"
     # NOTE: Domain routing (keep.nextlevelfoundry.com) is configured on
     # Helicarrier's Traefik, NOT via docker labels. Docker labels only work
     # when Traefik is on the same host. Request routing via Infrastructure handoff.
