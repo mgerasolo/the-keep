@@ -1,9 +1,9 @@
 # BMAD Timeline
 
-## Position: 🔄 TEST FRAMEWORK SETUP - Enabling TDD
+## Position: ✅ SETUP COMPLETE - Ready for TDD Story Loop
 
-**Status:** All 6 setup steps complete. Test framework initialized. 88 stories in sprint-status.yaml.
-**Next:** Complete test framework verification, then Step 7 - Create Story (`/bmad-create-story`)
+**Status:** All 7 setup steps complete (including test framework). 88 stories in sprint-status.yaml.
+**Next:** Step 8 - Dev Story (`/bmad-dev-story`) with TDD workflow
 
 ---
 
@@ -39,7 +39,7 @@ flowchart TB
     style S4 fill:#22c55e,stroke:#4ade80,color:#000
     style S5 fill:#22c55e,stroke:#4ade80,color:#000
     style S6 fill:#22c55e,stroke:#4ade80,color:#000
-    style S7 fill:#facc15,stroke:#fde047,color:#000
+    style S7 fill:#22c55e,stroke:#4ade80,color:#000
 ```
 
 ---
@@ -54,7 +54,7 @@ flowchart TB
 | 4 | UX | `/bmad-create-ux-design` | ● |
 | 5 | Epics | `/bmad-create-epics-and-stories` | ● |
 | 6 | Sprint | `/bmad-sprint-planning` | ● |
-| 6.5 | Test Framework | `/bmad-testarch-framework` | ▶ |
+| 6.5 | Test Framework | `/bmad-testarch-framework` | ● |
 | 7 | Create | `/bmad-create-story` | ● |
 | 8 | Dev (TDD) | `/bmad-dev-story` | ○ |
 | 9 | Review | `/bmad-code-review` | ○ |
