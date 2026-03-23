@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { getCurrentUser } from '@/lib/auth';
-import { UserProvider } from '@/lib/auth/context';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'The Keep - Personal Knowledge Management',
@@ -19,9 +19,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="antialiased">
-        <UserProvider user={user}>
-          {children}
-        </UserProvider>
+        <Providers user={user}>{children}</Providers>
       </body>
     </html>
   );

@@ -46,8 +46,8 @@ development_status:
   epic-0: in-progress
   0-1-infrastructure-stack-deployment: done
   0-2-database-schema-and-migrations: done
-  0-3-auth-ready-architecture: in-progress
-  0-4-api-layer-and-data-fetching: backlog
+  0-3-auth-ready-architecture: done
+  0-4-api-layer-and-data-fetching: in-progress
   0-5-toast-and-error-handling-framework: backlog
   0-6-logging-and-observability: backlog
   0-7-ci-cd-pipeline: backlog
