@@ -62,3 +62,33 @@ pre {
 ::selection {
   background-color: rgba(86, 156, 214, 0.3);
 }
+
+/* Dockview dark theme overrides */
+.dockview-theme-dark {
+  --dv-activegroup-visiblepanel-tab-background-color: var(--background-secondary);
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--background);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--background-tertiary);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--background);
+  --dv-tab-divider-color: var(--border);
+  --dv-activegroup-visiblepanel-tab-color: var(--foreground);
+  --dv-activegroup-hiddenpanel-tab-color: var(--foreground-secondary);
+  --dv-inactivegroup-visiblepanel-tab-color: var(--foreground-secondary);
+  --dv-inactivegroup-hiddenpanel-tab-color: var(--foreground-secondary);
+  --dv-background-color: var(--background);
+  --dv-paneview-header-border-color: var(--border);
+  --dv-tabs-and-actions-container-background-color: var(--background);
+  --dv-tabs-container-scrollbar-color: #424242;
+  --dv-group-view-background-color: var(--background);
+  --dv-tabs-and-actions-container-font-size: 13px;
+  --dv-drag-over-background-color: rgba(86, 156, 214, 0.2);
+  --dv-drag-over-border-color: var(--accent);
+  --dv-separator-border: var(--border);
+}
+
+.dockview-theme-dark .tab {
+  border-radius: 0;
+}
+
+.dockview-theme-dark .tabs-container {
+  border-bottom: 1px solid var(--border);
+}
