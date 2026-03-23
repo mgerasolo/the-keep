@@ -15,7 +15,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5011:5432"
+      - "5017:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U thekeep -d thekeep"]
       interval: 10s
@@ -31,7 +31,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "5012:6379"
+      - "5018:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
