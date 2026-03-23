@@ -90,7 +90,7 @@ services:
       - production
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.the-keep.rule=Host(`the-keep.nextlevelguild.com`)"
+      - "traefik.http.routers.the-keep.rule=Host(`the-keep.nextlevelfoundry.com`)"
       - "traefik.http.routers.the-keep.entrypoints=websecure"
       - "traefik.http.routers.the-keep.tls=true"
       - "traefik.http.routers.the-keep.tls.certresolver=letsencrypt"
