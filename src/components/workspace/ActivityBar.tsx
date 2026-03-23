@@ -19,7 +19,7 @@ interface ActivityBarProps {
   activeProjectId: string | null;
   onProjectSelect: (projectId: string) => void;
   onNewProject: () => void;
-  onGlobalAction: (action: 'search' | 'knowledge' | 'settings') => void;
+  onGlobalAction: (action: 'search' | 'knowledge' | 'settings' | 'ai') => void;
 }
 
 export function ActivityBar({
@@ -66,6 +66,15 @@ export function ActivityBar({
 
       {/* Global actions - bottom section */}
       <div className="py-2 space-y-1">
+        <ActivityBarItem
+          icon="🤖"
+          label="AI Chat"
+          isActive={false}
+          isHovered={hoveredId === 'ai'}
+          onMouseEnter={() => setHoveredId('ai')}
+          onMouseLeave={() => setHoveredId(null)}
+          onClick={() => onGlobalAction('ai')}
+        />
         <ActivityBarItem
           icon="🔍"
           label="Search"

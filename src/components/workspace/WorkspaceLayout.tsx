@@ -11,7 +11,10 @@ import 'dockview-react/dist/styles/dockview.css';
 import { ActivityBar } from './ActivityBar';
 import { WelcomePanel } from './panels/WelcomePanel';
 import { FileBrowserPanel } from './panels/FileBrowserPanel';
-import { useProjectStore } from '@/stores';
+import { EditorPanel } from './panels/EditorPanel';
+import { AIChatPanel } from './panels/AIChatPanel';
+import { ProjectFormModal } from '@/components/projects';
+import { useProjectStore, useWorkspaceStore } from '@/stores';
 import { api } from '@/lib/trpc/react';
 import { toast } from '@/components/ui/toaster';
 
@@ -19,6 +22,8 @@ import { toast } from '@/components/ui/toaster';
 const PANEL_COMPONENTS: Record<string, React.FC<IDockviewPanelProps>> = {
   welcome: WelcomePanel,
   fileBrowser: FileBrowserPanel,
+  editor: EditorPanel,
+  aiChat: AIChatPanel,
 };
 
 /**
@@ -42,7 +47,13 @@ function PanelComponent(props: IDockviewPanelProps) {
 export function WorkspaceLayout() {
   const apiRef = useRef<DockviewReadyEvent['api'] | null>(null);
   const { activeProjectId, setActiveProject } = useProjectStore();
-  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<{
+    id: string;
+    name: string;
+    icon: string | null;
+    description: string | null;
+  } | null>(null);
 
   // Fetch projects
   const { data: projects = [] } = api.projects.list.useQuery();
@@ -71,18 +82,52 @@ export function WorkspaceLayout() {
   );
 
   const handleNewProject = useCallback(() => {
-    setShowNewProjectModal(true);
-    // TODO: Implement new project modal in Story 1-3
-    toast.info('New project - coming soon!');
+    setEditingProject(null);
+    setShowProjectModal(true);
   }, []);
 
-  const handleGlobalAction = useCallback((action: 'search' | 'knowledge' | 'settings') => {
-    // TODO: Implement global actions
-    toast.info(`${action} - coming soon!`);
+  const handleCloseProjectModal = useCallback(() => {
+    setShowProjectModal(false);
+    setEditingProject(null);
   }, []);
+
+  const handleGlobalAction = useCallback((action: 'search' | 'knowledge' | 'settings' | 'ai') => {
+    if (!apiRef.current) return;
+
+    switch (action) {
+      case 'ai':
+        // Check if AI chat is already open
+        const existingChat = apiRef.current.panels.find((p) => p.params?.componentId === 'aiChat');
+        if (existingChat) {
+          existingChat.api.setActive();
+        } else {
+          // Open AI chat panel
+          apiRef.current.addPanel({
+            id: 'aiChat',
+            component: 'default',
+            params: { componentId: 'aiChat' },
+            title: 'AI Chat',
+            position: { referencePanel: 'fileBrowser', direction: 'right' },
+          });
+        }
+        break;
+      case 'search':
+        toast.info('Search - coming soon!');
+        break;
+      case 'knowledge':
+        toast.info('Knowledge Graph - coming soon!');
+        break;
+      case 'settings':
+        toast.info('Settings - coming soon!');
+        break;
+    }
+  }, []);
+
+  const { setDockviewApi } = useWorkspaceStore();
 
   const onReady = useCallback((event: DockviewReadyEvent) => {
     apiRef.current = event.api;
+    setDockviewApi(event.api);
 
     // Add file browser panel on the left
     event.api.addPanel({
@@ -106,7 +151,7 @@ export function WorkspaceLayout() {
     if (fileBrowserGroup) {
       fileBrowserGroup.api.setSize({ width: 250 });
     }
-  }, []);
+  }, [setDockviewApi]);
 
   return (
     <div className="flex h-screen w-screen bg-background">
@@ -129,6 +174,13 @@ export function WorkspaceLayout() {
           }}
         />
       </div>
+
+      {/* Project Modal */}
+      <ProjectFormModal
+        isOpen={showProjectModal}
+        onClose={handleCloseProjectModal}
+        editProject={editingProject}
+      />
     </div>
   );
 }
