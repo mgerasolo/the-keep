@@ -1,9 +1,9 @@
 # BMAD Timeline
 
-## Position: ✅ SETUP COMPLETE - Ready for Story Loop
+## Position: 🔄 TEST FRAMEWORK SETUP - Enabling TDD
 
-**Status:** All 6 setup steps complete. 88 stories in sprint-status.yaml.
-**Next:** Step 7 - Create Story (`/bmad-create-story`)
+**Status:** All 6 setup steps complete. Test framework initialized. 88 stories in sprint-status.yaml.
+**Next:** Complete test framework verification, then Step 7 - Create Story (`/bmad-create-story`)
 
 ---
 
@@ -18,19 +18,20 @@ flowchart TB
         S4["4 UX"]
         S5["5 Epics"]
         S6["6 Sprint"]
-        S1 --> S2 --> S3 --> S4 --> S5 --> S6
+        S7["6.5 Test Framework"]
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
     end
 
-    subgraph LOOP["STORY LOOP"]
+    subgraph LOOP["STORY LOOP (TDD)"]
         direction TB
         L7["7 Create"]
-        L8["8 Dev"]
+        L8["8 Dev (Red→Green→Refactor)"]
         L9["9 Review"]
         L7 --> L8 --> L9
         L9 -.->|next| L7
     end
 
-    S6 --> LOOP
+    S7 --> LOOP
 
     style S1 fill:#22c55e,stroke:#4ade80,color:#000
     style S2 fill:#22c55e,stroke:#4ade80,color:#000
@@ -38,6 +39,7 @@ flowchart TB
     style S4 fill:#22c55e,stroke:#4ade80,color:#000
     style S5 fill:#22c55e,stroke:#4ade80,color:#000
     style S6 fill:#22c55e,stroke:#4ade80,color:#000
+    style S7 fill:#facc15,stroke:#fde047,color:#000
 ```
 
 ---
@@ -52,11 +54,20 @@ flowchart TB
 | 4 | UX | `/bmad-create-ux-design` | ● |
 | 5 | Epics | `/bmad-create-epics-and-stories` | ● |
 | 6 | Sprint | `/bmad-sprint-planning` | ● |
-| 7 | Create | `/bmad-create-story` | ○ |
-| 8 | Dev | `/bmad-dev-story` | ○ |
+| 6.5 | Test Framework | `/bmad-testarch-framework` | ▶ |
+| 7 | Create | `/bmad-create-story` | ● |
+| 8 | Dev (TDD) | `/bmad-dev-story` | ○ |
 | 9 | Review | `/bmad-code-review` | ○ |
 
 **Legend:** ▶ NOW · ● DONE · ○ TODO
+
+### TDD Workflow (Step 8)
+
+The Dev step follows **Red→Green→Refactor**:
+1. **Red:** Write failing tests first
+2. **Green:** Implement minimal code to pass
+3. **Refactor:** Clean up while tests stay green
+4. **Self-validate:** Run full test suite before declaring done
 
 ---
 
