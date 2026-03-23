@@ -63,23 +63,55 @@ export function createMockInsertChain<T>(data: T) {
 
 /**
  * Test fixture: Sample user data
+ * Uses UUIDs matching the actual database schema
  */
 export const fixtures = {
   user: {
-    id: 1,
+    id: 'e08cc546-fa29-4559-93f9-ceb658f66668',
     username: 'mgerasolo',
     email: 'matt@gerasolo.com',
     name: 'Matt',
     createdAt: new Date('2026-03-22'),
   },
   project: {
-    id: 1,
-    userId: 1,
+    id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    userId: 'e08cc546-fa29-4559-93f9-ceb658f66668',
     name: 'Test Project',
     icon: 'folder',
     description: 'A test project',
     settings: {},
     createdAt: new Date('2026-03-22'),
+    updatedAt: new Date('2026-03-22'),
     archivedAt: null,
   },
+  folder: {
+    id: 'f1234567-89ab-cdef-0123-456789abcdef',
+    projectId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    parentId: null,
+    name: 'Test Folder',
+    path: '/Test Folder',
+    createdAt: new Date('2026-03-22'),
+    updatedAt: new Date('2026-03-22'),
+  },
+  file: {
+    id: '12345678-9abc-def0-1234-56789abcdef0',
+    projectId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    folderId: 'f1234567-89ab-cdef-0123-456789abcdef',
+    name: 'test-file.md',
+    path: '/Test Folder/test-file.md',
+    mimeType: 'text/markdown',
+    sizeBytes: 1024,
+    storageKey: 'test-storage-key',
+    metadata: {},
+    createdAt: new Date('2026-03-22'),
+    updatedAt: new Date('2026-03-22'),
+    deletedAt: null,
+  },
 };
+
+/**
+ * Generate a random UUID for tests
+ */
+export function generateTestId(): string {
+  return crypto.randomUUID();
+}

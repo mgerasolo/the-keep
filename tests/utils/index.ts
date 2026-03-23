@@ -6,3 +6,4 @@
 export * from './render';
 export * from './api';
 export * from './db';
+export * from './trpc';

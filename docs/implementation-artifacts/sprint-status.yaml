@@ -43,16 +43,16 @@ story_location: docs/implementation-artifacts/stories
 
 development_status:
   # Epic 0: Infrastructure & Developer Foundation
-  epic-0: in-progress
+  epic-0: done
   0-1-infrastructure-stack-deployment: done
   0-2-database-schema-and-migrations: done
   0-3-auth-ready-architecture: done
   0-4-api-layer-and-data-fetching: done
   0-5-toast-and-error-handling-framework: done
   0-6-logging-and-observability: done
-  0-7-ci-cd-pipeline: in-progress
-  0-8-testing-framework: backlog
-  0-9-empty-states-and-loading-skeletons: backlog
+  0-7-ci-cd-pipeline: done
+  0-8-testing-framework: done
+  0-9-empty-states-and-loading-skeletons: done
   epic-0-retrospective: optional
 
   # Epic 1: Project Foundation & File Workspace
