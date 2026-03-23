@@ -1,6 +1,6 @@
 # Story 0.1: Infrastructure Stack Deployment
 
-**Status:** blocked
+**Status:** review
 
 ---
 
@@ -25,7 +25,7 @@
 
 2. **AC-2: Application Accessible via Domain**
    - Given the stack is running
-   - When I access `https://the-keep.nextlevelguild.com`
+   - When I access `https://the-keep.nextlevelfoundry.com`
    - Then the application loads successfully
    - And Traefik routes traffic with valid SSL certificate
 
@@ -104,7 +104,7 @@
   - [ ] Test domain access via Traefik (BLOCKED: Traefik not configured on Banner)
 
 - [x] **Task 7: Validate Deployment** (AC: 1, 2, 3, 4)
-  - [ ] Verify `https://the-keep.nextlevelguild.com` loads (BLOCKED: Traefik not configured)
+  - [ ] Verify `https://the-keep.nextlevelfoundry.com` loads (BLOCKED: Traefik not configured)
   - [x] Verify `/api/health` returns all services OK
   - [x] Verify pgvector extension: `SELECT * FROM pg_extension WHERE extname = 'vector';`
   - [x] Document any issues in Dev Notes
@@ -120,7 +120,7 @@
 - **Port Allocation:** Web on 5010, PostgreSQL on 5011, Redis on 5012
 - **Database:** pgvector/pgvector:pg16 image (PostgreSQL 16 with vector extension)
 - **Deployment Target:** Banner (10.0.0.33) - NEVER Stark or localhost
-- **Domain:** `the-keep.nextlevelguild.com` via Traefik
+- **Domain:** `the-keep.nextlevelfoundry.com` via Traefik
 - **Secrets Location:** `/mnt/foundry_devlab/secrets/env/`
 
 ### Docker Compose Reference
@@ -149,7 +149,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.the-keep.rule=Host(`the-keep.nextlevelguild.com`)"
+      - "traefik.http.routers.the-keep.rule=Host(`the-keep.nextlevelfoundry.com`)"
       - "traefik.http.routers.the-keep.tls=true"
       - "traefik.http.services.the-keep.loadbalancer.server.port=3000"
 
@@ -286,7 +286,7 @@ export async function GET() {
 ## Definition of Done
 
 - [x] All services running (`docker compose ps` shows healthy)
-- [ ] Domain accessible: `https://the-keep.nextlevelguild.com` (BLOCKED: Traefik not configured)
+- [ ] Domain accessible: `https://the-keep.nextlevelfoundry.com` (BLOCKED: Traefik not configured)
 - [x] Health endpoint returns all services OK
 - [x] pgvector extension verified in PostgreSQL
 - [x] No hardcoded secrets in code
@@ -319,7 +319,10 @@ Claude Opus 4.5 (claude-opus-4-5-20251101)
 5. **Test Coverage** - Unit tests (4 passing) and E2E tests (3 passing)
 
 **BLOCKER for AC-2:**
-Traefik is not configured on Banner. The domain `the-keep.nextlevelguild.com` is not routable. App is accessible via `http://10.0.0.33:5010`. Traefik labels have been added to docker-compose.yml for when Traefik is set up.
+Traefik is not configured on Banner. Domain routing requested via handoff **HO-2** to Infrastructure.
+- Domain: `the-keep.nextlevelfoundry.com`
+- App accessible via `http://10.0.0.33:5010` in the meantime
+- Traefik labels already configured in docker-compose.yml
 
 **Port Deviation:**
 Story spec: db=5011, redis=5012
